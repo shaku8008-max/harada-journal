@@ -1,17 +1,8 @@
-import { redirect } from "next/navigation";
-
-import { createClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/require-user";
 import { signOut } from "./actions";
 
 export default async function Home() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await requireUser();
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-stone-100 px-4 py-10 text-stone-950">
