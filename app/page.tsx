@@ -1,6 +1,9 @@
 import { requireUser } from "@/lib/supabase/require-user";
 import { signOut } from "./actions";
 
+// The page reads the request-bound Supabase cookie for every authenticated visit.
+export const instant = false;
+
 export default async function Home() {
   const user = await requireUser();
 
