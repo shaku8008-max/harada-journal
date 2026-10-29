@@ -39,77 +39,41 @@ export type Database = {
   }
   public: {
     Tables: {
-      charts: {
+      action_logs: {
         Row: {
-          archived_at: string | null
+          action_id: string
+          created_at: string | null
           id: string
-          started_at: string | null
-          status: string
-          target_date: string | null
-          title: string
-          user_id: string
-          why: string | null
-        }
-        Insert: {
-          archived_at?: string | null
-          id: string
-          started_at?: string | null
-          status?: string
-          target_date?: string | null
-          title: string
-          user_id: string
-          why?: string | null
-        }
-        Update: {
-          archived_at?: string | null
-          id?: string
-          started_at?: string | null
-          status?: string
-          target_date?: string | null
-          title?: string
-          user_id?: string
-          why?: string | null
-        }
-        Relationships: []
-      }
-      sub_goals: {
-        Row: {
-          archived_at: string | null
-          chart_id: string
-          id: string
-          position: number
-          title: string
+          log_date: string
           user_id: string
         }
         Insert: {
-          archived_at?: string | null
-          chart_id: string
+          action_id: string
+          created_at?: string | null
           id: string
-          position: number
-          title: string
+          log_date: string
           user_id: string
         }
         Update: {
-          archived_at?: string | null
-          chart_id?: string
+          action_id?: string
+          created_at?: string | null
           id?: string
-          position?: number
-          title?: string
+          log_date?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "sub_goals_chart_id_fkey"
-            columns: ["chart_id"]
+            foreignKeyName: "action_logs_action_id_fkey"
+            columns: ["action_id"]
             isOneToOne: false
-            referencedRelation: "charts"
+            referencedRelation: "actions"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "sub_goals_chart_user_id_fkey"
-            columns: ["chart_id", "user_id"]
+            foreignKeyName: "action_logs_action_user_id_fkey"
+            columns: ["action_id", "user_id"]
             isOneToOne: false
-            referencedRelation: "charts"
+            referencedRelation: "actions"
             referencedColumns: ["id", "user_id"]
           },
         ]
@@ -162,6 +126,39 @@ export type Database = {
           },
         ]
       }
+      charts: {
+        Row: {
+          archived_at: string | null
+          id: string
+          started_at: string | null
+          status: string
+          target_date: string | null
+          title: string
+          user_id: string
+          why: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          id: string
+          started_at?: string | null
+          status?: string
+          target_date?: string | null
+          title: string
+          user_id: string
+          why?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string
+          target_date?: string | null
+          title?: string
+          user_id?: string
+          why?: string | null
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           body: string
@@ -192,45 +189,6 @@ export type Database = {
         }
         Relationships: []
       }
-      action_logs: {
-        Row: {
-          action_id: string
-          created_at: string | null
-          id: string
-          log_date: string
-          user_id: string
-        }
-        Insert: {
-          action_id: string
-          created_at?: string | null
-          id: string
-          log_date: string
-          user_id: string
-        }
-        Update: {
-          action_id?: string
-          created_at?: string | null
-          id?: string
-          log_date?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "action_logs_action_id_fkey"
-            columns: ["action_id"]
-            isOneToOne: false
-            referencedRelation: "actions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "action_logs_action_user_id_fkey"
-            columns: ["action_id", "user_id"]
-            isOneToOne: false
-            referencedRelation: "actions"
-            referencedColumns: ["id", "user_id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           created_at: string | null
@@ -254,6 +212,48 @@ export type Database = {
           timezone?: string
         }
         Relationships: []
+      }
+      sub_goals: {
+        Row: {
+          archived_at: string | null
+          chart_id: string
+          id: string
+          position: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          chart_id: string
+          id: string
+          position: number
+          title: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          chart_id?: string
+          id?: string
+          position?: number
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sub_goals_chart_id_fkey"
+            columns: ["chart_id"]
+            isOneToOne: false
+            referencedRelation: "charts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sub_goals_chart_user_id_fkey"
+            columns: ["chart_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "charts"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
       }
     }
     Views: {
