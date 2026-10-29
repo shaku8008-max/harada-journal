@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { archiveAction, archiveSubGoal, saveAction, saveChart, saveSubGoal } from "@/app/chart-actions";
@@ -30,6 +30,18 @@ type CellEditorProps = {
   onOpenChange: (open: boolean) => void;
 };
 
+function useIsMobile() {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      const mediaQuery = window.matchMedia("(max-width: 767px)");
+      mediaQuery.addEventListener("change", onStoreChange);
+      return () => mediaQuery.removeEventListener("change", onStoreChange);
+    },
+    () => window.matchMedia("(max-width: 767px)").matches,
+    () => false,
+  );
+}
+
 function cellHeading(cell: GridCell) {
   if (cell.kind === "main") return "Main goal";
   if (cell.kind === "sub_goal") return `Sub-goal ${cell.subGoalPosition}`;
@@ -45,6 +57,7 @@ export function CellEditor({ data, cell, open, onOpenChange }: CellEditorProps) 
   const [weeklyTarget, setWeeklyTarget] = useState(() => cell?.action?.weekly_target ?? 3);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const isMobile = useIsMobile();
 
   if (!cell) return null;
   const activeCell = cell;
@@ -112,8 +125,9 @@ export function CellEditor({ data, cell, open, onOpenChange }: CellEditorProps) 
     <div className="flex gap-2 sm:ml-auto"><button type="button" onClick={close} className="min-h-11 rounded-full border border-[var(--line)] px-5 py-2 text-sm font-medium hover:border-[var(--ink)]">Cancel</button><button type="button" onClick={save} disabled={isPending || !title.trim()} className="min-h-11 rounded-full bg-[var(--ink)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--accent)] disabled:opacity-50">{isPending ? "Saving..." : isCreate ? "Create" : "Save changes"}</button></div>
   </>;
 
-  return <>
-    <div className="hidden md:block"><Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="border-[var(--line)] bg-[var(--surface)] sm:max-w-lg"><DialogHeader><DialogTitle className="text-2xl">{isCreate ? `Add ${cellHeading(activeCell).toLowerCase()}` : `Edit ${cellHeading(activeCell).toLowerCase()}`}</DialogTitle><DialogDescription>Keep this part concrete and easy to return to.</DialogDescription></DialogHeader>{form}<DialogFooter className="border-[var(--line)] bg-[var(--paper)]">{actions}</DialogFooter></DialogContent></Dialog></div>
-    <div className="md:hidden"><Drawer open={open} onOpenChange={onOpenChange} swipeDirection="down"><DrawerContent className="max-h-[92dvh] border-[var(--line)] bg-[var(--surface)]"><DrawerHeader className="text-left"><DrawerTitle className="text-2xl">{isCreate ? `Add ${cellHeading(activeCell).toLowerCase()}` : `Edit ${cellHeading(activeCell).toLowerCase()}`}</DrawerTitle><DrawerDescription>Keep this part concrete and easy to return to.</DrawerDescription></DrawerHeader>{form}<DrawerFooter className="border-[var(--line)] bg-[var(--paper)]">{actions}</DrawerFooter></DrawerContent></Drawer></div>
-  </>;
+  return isMobile ? (
+    <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="down"><DrawerContent className="max-h-[92dvh] border-[var(--line)] bg-[var(--surface)]"><DrawerHeader className="text-left"><DrawerTitle className="text-2xl">{isCreate ? `Add ${cellHeading(activeCell).toLowerCase()}` : `Edit ${cellHeading(activeCell).toLowerCase()}`}</DrawerTitle><DrawerDescription>Keep this part concrete and easy to return to.</DrawerDescription></DrawerHeader>{form}<DrawerFooter className="border-[var(--line)] bg-[var(--paper)]">{actions}</DrawerFooter></DrawerContent></Drawer>
+  ) : (
+    <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="border-[var(--line)] bg-[var(--surface)] sm:max-w-lg"><DialogHeader><DialogTitle className="text-2xl">{isCreate ? `Add ${cellHeading(activeCell).toLowerCase()}` : `Edit ${cellHeading(activeCell).toLowerCase()}`}</DialogTitle><DialogDescription>Keep this part concrete and easy to return to.</DialogDescription></DialogHeader>{form}<DialogFooter className="border-[var(--line)] bg-[var(--paper)]">{actions}</DialogFooter></DialogContent></Dialog>
+  );
 }

@@ -147,6 +147,24 @@ export async function saveSubGoal(input: SubGoalInput): Promise<ActionResult> {
     return error ? { error: error.message } : { id: data?.id ?? input.subGoalId };
   }
 
+  const { data: existingSubGoal, error: existingError } = await supabase
+    .from("sub_goals")
+    .select("id")
+    .eq("chart_id", input.chartId)
+    .eq("position", input.position)
+    .eq("user_id", user.id)
+    .is("archived_at", null)
+    .maybeSingle();
+  if (existingError) return { error: existingError.message };
+  if (existingSubGoal) {
+    const { error } = await supabase
+      .from("sub_goals")
+      .update({ title: values.title })
+      .eq("id", existingSubGoal.id)
+      .eq("user_id", user.id);
+    return error ? { error: error.message } : { id: existingSubGoal.id };
+  }
+
   const { data, error } = await supabase
     .from("sub_goals")
     .insert({ id: crypto.randomUUID(), ...values })
@@ -205,6 +223,28 @@ export async function saveAction(input: ActionInput): Promise<ActionResult> {
       .select("id")
       .maybeSingle();
     return error ? { error: error.message } : { id: data?.id ?? input.actionId };
+  }
+
+  const { data: existingAction, error: existingError } = await supabase
+    .from("actions")
+    .select("id")
+    .eq("sub_goal_id", input.subGoalId)
+    .eq("position", input.position)
+    .eq("user_id", user.id)
+    .is("archived_at", null)
+    .maybeSingle();
+  if (existingError) return { error: existingError.message };
+  if (existingAction) {
+    const { error } = await supabase
+      .from("actions")
+      .update({
+        kind: values.kind,
+        title: values.title,
+        weekly_target: values.weekly_target,
+      })
+      .eq("id", existingAction.id)
+      .eq("user_id", user.id);
+    return error ? { error: error.message } : { id: existingAction.id };
   }
 
   const { data, error } = await supabase

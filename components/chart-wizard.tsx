@@ -106,8 +106,56 @@ export function ChartWizard() {
     });
   }
 
+  function continueToActions() {
+    if (!chartId) return;
+    startTransition(async () => {
+      const filled = subGoals.filter((subGoal) => subGoal.title.trim());
+      const saved = await Promise.all(filled.map((subGoal) => saveSubGoal({
+        chartId,
+        subGoalId: subGoal.id,
+        position: subGoal.position,
+        title: subGoal.title,
+      })));
+      const failed = saved.find((result) => result.error);
+      if (failed?.error) {
+        setError(failed.error);
+        return;
+      }
+      setSubGoals((current) => current.map((subGoal) => {
+        const resultIndex = filled.findIndex((item) => item.position === subGoal.position);
+        const result = resultIndex >= 0 ? saved[resultIndex] : undefined;
+        return result?.id ? { ...subGoal, id: result.id } : subGoal;
+      }));
+      setError(null);
+      setStep(3);
+    });
+  }
+
   function finishWizard() {
-    if (chartId) router.refresh();
+    if (!chartId) return;
+    startTransition(async () => {
+      const pendingSaves = subGoals.flatMap((subGoal, subGoalIndex) => {
+        if (!subGoal.id || !subGoal.title.trim()) return [];
+        return actions[subGoalIndex]
+          .filter((action) => action.title.trim())
+          .map((action) => saveAction({
+            actionId: action.id,
+            chartId,
+            subGoalId: subGoal.id!,
+            position: action.position,
+            title: action.title,
+            kind: action.kind,
+            weeklyTarget: action.weeklyTarget,
+          }));
+      });
+      const results = await Promise.all(pendingSaves);
+      const failed = results.find((result) => result.error);
+      if (failed?.error) {
+        setError(failed.error);
+        return;
+      }
+      router.refresh();
+    });
   }
 
   return (
@@ -177,7 +225,7 @@ export function ChartWizard() {
               <button type="button" onClick={() => setStep(1)} className="min-h-12 rounded-full px-5 py-3 text-sm font-medium text-[var(--muted-ink)] hover:bg-[var(--paper)]">Back</button>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button type="button" onClick={() => setStep(3)} className="min-h-12 rounded-full border border-[var(--line)] px-5 py-3 text-sm font-medium hover:border-[var(--ink)]">Skip for now</button>
-                <button type="button" onClick={() => setStep(3)} className="min-h-12 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-medium text-white hover:bg-[var(--accent)]">Continue to actions</button>
+                <button type="button" onClick={continueToActions} disabled={isPending} className="min-h-12 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-medium text-white hover:bg-[var(--accent)] disabled:opacity-50">{isPending ? "Saving..." : "Continue to actions"}</button>
               </div>
             </div>
           </div>
