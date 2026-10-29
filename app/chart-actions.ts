@@ -176,7 +176,7 @@ export async function saveAction(input: ActionInput): Promise<ActionResult> {
   if (!subGoal) return { error: "Save the sub-goal before adding an action." };
 
   const weeklyTarget = input.kind === "weekly" ? input.weeklyTarget ?? 3 : null;
-  if (!Number.isInteger(weeklyTarget) || weeklyTarget < 1 || weeklyTarget > 7) {
+  if (input.kind === "weekly" && (weeklyTarget === null || !Number.isInteger(weeklyTarget) || weeklyTarget < 1 || weeklyTarget > 7)) {
     return { error: "Weekly actions need a target from 1 to 7." };
   }
 
@@ -215,4 +215,44 @@ export async function saveAction(input: ActionInput): Promise<ActionResult> {
     .select("id")
     .single();
   return error ? { error: error.message } : { id: data.id };
+}
+
+export async function archiveAction(input: { actionId: string; chartId: string }): Promise<ActionResult> {
+  const user = await requireUser();
+  if (!(await ownedChart(input.chartId, user.id))) {
+    return { error: "That chart is no longer available." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("actions")
+    .update({ archived_at: new Date().toISOString() })
+    .eq("id", input.actionId)
+    .eq("user_id", user.id);
+  return error ? { error: error.message } : {};
+}
+
+export async function archiveSubGoal(input: { subGoalId: string; chartId: string }): Promise<ActionResult> {
+  const user = await requireUser();
+  if (!(await ownedChart(input.chartId, user.id))) {
+    return { error: "That chart is no longer available." };
+  }
+
+  const supabase = await createClient();
+  const archivedAt = new Date().toISOString();
+  const { error: subGoalError } = await supabase
+    .from("sub_goals")
+    .update({ archived_at: archivedAt })
+    .eq("id", input.subGoalId)
+    .eq("chart_id", input.chartId)
+    .eq("user_id", user.id);
+  if (subGoalError) return { error: subGoalError.message };
+
+  const { error: actionError } = await supabase
+    .from("actions")
+    .update({ archived_at: archivedAt })
+    .eq("sub_goal_id", input.subGoalId)
+    .eq("user_id", user.id)
+    .is("archived_at", null);
+  return actionError ? { error: actionError.message } : {};
 }

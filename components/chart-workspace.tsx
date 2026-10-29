@@ -1,6 +1,6 @@
 import type { ChartData } from "@/lib/charts";
 
-import { ChartGrid } from "./chart-grid";
+import { ChartEditor } from "./chart-editor";
 
 export function ChartWorkspace({ data }: { data: ChartData }) {
   return (
@@ -13,7 +13,7 @@ export function ChartWorkspace({ data }: { data: ChartData }) {
         </div>
         <p className="text-sm text-[var(--muted-ink)]">Tap any cell to edit it.</p>
       </div>
-      <ChartGrid data={data} />
+      <ChartEditor data={data} />
     </section>
   );
 }
