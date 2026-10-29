@@ -174,7 +174,7 @@ export function ChartWizard() {
       <div className="mb-8 flex items-center gap-2 text-sm text-[var(--muted-ink)]" aria-label="Chart setup progress">
         {["Main goal", "Sub-goals", "Actions"].map((label, index) => (
           <div key={label} className="flex items-center gap-2">
-            <span className={`grid size-8 place-items-center rounded-full border ${step === index + 1 ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--line)] bg-white"}`}>
+            <span className={`grid size-8 place-items-center rounded-full border ${step === index + 1 ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-foreground)]" : "border-[var(--line)] bg-[var(--surface)]"}`}>
               {index + 1}
             </span>
             <span className="hidden sm:inline">{label}</span>

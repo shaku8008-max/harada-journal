@@ -36,7 +36,7 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
       <div>
-        <label htmlFor="email" className="text-sm font-medium text-stone-800">
+        <label htmlFor="email" className="text-sm font-medium text-[var(--ink)]">
           Email address
         </label>
         <input
@@ -48,13 +48,13 @@ export function LoginForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
-          className="mt-2 min-h-12 w-full rounded-2xl border border-stone-300 bg-white px-4 text-base text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-950 focus:ring-2 focus:ring-stone-200"
+          className="mt-2 min-h-12 w-full rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 text-base text-[var(--ink)] outline-none transition placeholder:text-[var(--muted-ink)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/30"
         />
       </div>
       <button
         type="submit"
         disabled={isSubmitting}
-        className="min-h-12 w-full rounded-full bg-stone-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-wait disabled:opacity-60"
+        className="min-h-12 w-full rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-medium text-[var(--accent-foreground)] transition hover:bg-[var(--aether-lilac)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--aether-lilac)] disabled:cursor-wait disabled:opacity-60"
       >
         {isSubmitting ? "Sending link..." : "Send magic link"}
       </button>

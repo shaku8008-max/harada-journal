@@ -41,7 +41,7 @@ export function ChartOverview({ data, onMainSelect }: { data: ChartData; onMainS
           const subGoal = subGoalsByPosition.get(position);
           const actionCount = subGoal ? actionsBySubGoal.get(subGoal.id) ?? 0 : 0;
           return (
-            <Link key={position} href={`/?subGoal=${position}`} aria-label={`Sub-goal ${position}, ${subGoal?.title ?? "empty"}: ${actionCount} of 8 actions`} style={positionStyle(position)} className="flex min-h-36 flex-col justify-between rounded-2xl border border-[var(--position-accent)] bg-[var(--position-background)] p-4 text-left text-[var(--position-text)] transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--position-accent)] sm:min-h-48 sm:p-6">
+            <Link key={position} href={`/chart?subGoal=${position}`} aria-label={`Sub-goal ${position}, ${subGoal?.title ?? "empty"}: ${actionCount} of 8 actions`} style={positionStyle(position)} className="flex min-h-36 flex-col justify-between rounded-2xl border border-[var(--position-accent)] bg-[var(--position-background)] p-4 text-left text-[var(--position-text)] transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--position-accent)] sm:min-h-48 sm:p-6">
               <span className="text-sm font-medium">Direction {position}</span>
               <span className={`line-clamp-4 text-[15px] leading-6 sm:text-lg ${subGoal ? "font-medium" : "italic"}`}>{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>
               <span className="text-sm">{actionCount}/8 actions</span>

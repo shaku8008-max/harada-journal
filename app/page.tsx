@@ -1,45 +1,21 @@
+import { AetherFlowHero } from "@/components/aether-flow-hero";
 import { requireUser } from "@/lib/supabase/require-user";
-import { getActiveChart } from "@/lib/charts";
-import { ChartWizard } from "@/components/chart-wizard";
-import { ChartWorkspace } from "@/components/chart-workspace";
 import { signOut } from "./actions";
 
-// The page reads the request-bound Supabase cookie for every authenticated visit.
 export const instant = false;
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ subGoal?: string | string[] | undefined }>;
-}) {
+export default async function Home() {
   const user = await requireUser();
-  const chartData = await getActiveChart(user.id);
-  const query = await searchParams;
-  const rawSubGoal = Array.isArray(query.subGoal) ? query.subGoal[0] : query.subGoal;
-  const parsedSubGoal = rawSubGoal ? Number(rawSubGoal) : NaN;
-  const expandedPosition = Number.isInteger(parsedSubGoal) && parsedSubGoal >= 1 && parsedSubGoal <= 8 ? parsedSubGoal : null;
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 text-[var(--ink)] sm:px-8 sm:py-10">
-      <div className="mx-auto w-full max-w-7xl">
-        <header className="mb-10 flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">
-              Harada Journal
-            </p>
-            <p className="mt-2 text-sm text-[var(--muted-ink)]">A quiet place to keep the window open.</p>
-          </div>
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="min-h-11 rounded-full border border-[var(--line)] bg-[var(--paper)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-            >
-              Sign out
-            </button>
-          </form>
-        </header>
-        {chartData ? <ChartWorkspace data={chartData} expandedPosition={expandedPosition} /> : <ChartWizard />}
-      </div>
+    <main className="min-h-screen bg-[var(--aether-black)] text-white">
+      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-5 sm:px-10 sm:py-7">
+        <p className="text-sm font-medium tracking-[0.18em] text-white/70">HARADA JOURNAL</p>
+        <form action={signOut}>
+          <button type="submit" className="min-h-11 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 backdrop-blur-sm transition hover:border-white/35 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--aether-lilac)]">Sign out</button>
+        </form>
+      </header>
+      <AetherFlowHero email={user.email ?? undefined} />
     </main>
   );
 }
