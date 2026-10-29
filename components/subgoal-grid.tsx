@@ -5,6 +5,8 @@ import Link from "next/link";
 import type { ChartData } from "@/lib/charts";
 import { overviewPositions, type GridCell } from "@/lib/grid";
 import { actionHint, positionHints, positionStyle } from "@/lib/position-hints";
+import { actionPalette } from "@/lib/reveal-palettes";
+import { CanvasRevealCard } from "./canvas-reveal-card";
 
 function actionLabel(position: number, title: string | null, subGoalTitle: string) {
   return `Action ${position} of ${subGoalTitle || "empty sub-goal"}: ${title ?? "empty"}`;
@@ -45,9 +47,11 @@ export function SubGoalGrid({ data, position, onCellSelect }: { data: ChartData;
           const cell: GridCell = action
             ? { key: `action-${action.id}`, kind: "action", position: cellPosition, subGoalPosition: position, title: action.title, action }
             : { key: `action-empty-${position}-${cellPosition}`, kind: "action", position: cellPosition, subGoalPosition: position, title: null };
-          return <button key={cell.key} type="button" onClick={() => onCellSelect(cell)} aria-label={actionLabel(cellPosition, action?.title ?? null, subGoalTitle)} className={`flex min-h-28 items-center rounded-xl border border-[var(--position-accent)] p-3 text-left text-[15px] leading-6 transition hover:-translate-y-0.5 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--position-accent)] sm:min-h-36 sm:p-5 ${action ? "bg-[var(--position-background)] text-[var(--position-text)]" : "bg-[var(--position-background)] text-[var(--position-text)]"}`}>
-            <span className={action ? "line-clamp-4" : "italic"}>{action?.title ?? `e.g. ${actionHint}`}</span>
-          </button>;
+          return <CanvasRevealCard key={cell.key} colors={actionPalette(position, cellPosition)} className="min-h-28 rounded-xl sm:min-h-36">
+            <button type="button" onClick={() => onCellSelect(cell)} aria-label={actionLabel(cellPosition, action?.title ?? null, subGoalTitle)} className={`flex h-full min-h-28 w-full items-center rounded-xl border border-[var(--position-accent)] bg-[var(--position-background)] p-3 text-left text-[15px] leading-6 text-[var(--position-text)] transition hover:-translate-y-0.5 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--position-accent)] sm:min-h-36 sm:p-5`}>
+              <span className={action ? "line-clamp-4" : "italic"}>{action?.title ?? `e.g. ${actionHint}`}</span>
+            </button>
+          </CanvasRevealCard>;
         })}
       </div>
       <p className="mt-4 text-sm text-[var(--muted-ink)]">{actions.length}/8 actions added. Tap any cell to edit it.</p>
