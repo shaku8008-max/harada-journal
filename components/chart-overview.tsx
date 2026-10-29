@@ -4,8 +4,7 @@ import Link from "next/link";
 
 import type { ChartData } from "@/lib/charts";
 import type { GridCell } from "@/lib/grid";
-
-const overviewOrder: Array<number | "centre"> = [1, 2, 3, 8, "centre", 4, 7, 6, 5];
+import { overviewPositions } from "@/lib/grid";
 
 function dateLabel(value: string | null) {
   if (!value) return null;
@@ -27,7 +26,7 @@ export function ChartOverview({ data, onMainSelect }: { data: ChartData; onMainS
       </div>
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3" aria-label="Open Window 64 overview">
-        {overviewOrder.map((position) => {
+        {overviewPositions.map((position) => {
           if (position === "centre") {
             return (
               <button key="centre" type="button" onClick={() => onMainSelect(mainCell)} aria-label={`Main goal: ${data.chart.title}`} className="flex min-h-36 flex-col justify-center rounded-2xl border-2 border-[var(--ink)] bg-[var(--ink)] p-4 text-left text-white shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:min-h-48 sm:p-6">

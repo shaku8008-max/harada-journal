@@ -3,9 +3,7 @@
 import Link from "next/link";
 
 import type { ChartData } from "@/lib/charts";
-import type { GridCell } from "@/lib/grid";
-
-const gridPositions: Array<number | "centre"> = [1, 2, 3, 8, "centre", 4, 7, 6, 5];
+import { overviewPositions, type GridCell } from "@/lib/grid";
 
 function actionLabel(position: number, title: string | null, subGoalTitle: string) {
   return `Action ${position} of ${subGoalTitle || "empty sub-goal"}: ${title ?? "empty"}`;
@@ -36,7 +34,7 @@ export function SubGoalGrid({ data, position, onCellSelect }: { data: ChartData;
         <p className="mt-3 text-base leading-7 text-[var(--muted-ink)]">Build this direction with up to eight clear next moves.</p>
       </div>
       <div className="grid grid-cols-3 gap-2 rounded-2xl border-2 border-[var(--line)] bg-[var(--line)] p-2 sm:gap-3 sm:p-3" aria-label={`Sub-goal ${position} action grid`}>
-        {gridPositions.map((cellPosition) => {
+        {overviewPositions.map((cellPosition) => {
           if (cellPosition === "centre") {
             return <button key="centre" type="button" onClick={() => onCellSelect(centerCell)} aria-label={`Sub-goal ${position}: ${subGoal?.title ?? "empty"}`} className="flex min-h-28 items-center rounded-xl border-2 border-[var(--ink)] bg-[var(--ink)] p-3 text-left text-[15px] font-medium leading-6 text-white transition hover:-translate-y-0.5 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)] sm:min-h-36 sm:p-5">
               <span className="line-clamp-4">{subGoal?.title ?? "Add a sub-goal"}</span>
