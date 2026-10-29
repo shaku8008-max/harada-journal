@@ -7,9 +7,17 @@ import { signOut } from "./actions";
 // The page reads the request-bound Supabase cookie for every authenticated visit.
 export const instant = false;
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ subGoal?: string | string[] | undefined }>;
+}) {
   const user = await requireUser();
   const chartData = await getActiveChart(user.id);
+  const query = await searchParams;
+  const rawSubGoal = Array.isArray(query.subGoal) ? query.subGoal[0] : query.subGoal;
+  const parsedSubGoal = rawSubGoal ? Number(rawSubGoal) : NaN;
+  const expandedPosition = Number.isInteger(parsedSubGoal) && parsedSubGoal >= 1 && parsedSubGoal <= 8 ? parsedSubGoal : null;
 
   return (
     <main className="min-h-screen bg-[var(--paper)] px-4 py-6 text-[var(--ink)] sm:px-8 sm:py-10">
@@ -30,7 +38,7 @@ export default async function Home() {
             </button>
           </form>
         </header>
-        {chartData ? <ChartWorkspace data={chartData} /> : <ChartWizard />}
+        {chartData ? <ChartWorkspace data={chartData} expandedPosition={expandedPosition} /> : <ChartWizard />}
       </div>
     </main>
   );
