@@ -38,7 +38,7 @@ export function SubGoalGrid({ data, position, onCellSelect }: { data: ChartData;
         {overviewPositions.map((cellPosition) => {
           if (cellPosition === "centre") {
             return <button key="centre" type="button" onClick={() => onCellSelect(centerCell)} aria-label={`Sub-goal ${position}: ${subGoal?.title ?? "empty"}`} className="flex min-h-28 items-center rounded-xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-3 text-left text-[15px] font-medium leading-6 text-[var(--position-text)] transition hover:-translate-y-0.5 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--position-accent)] sm:min-h-36 sm:p-5">
-              <span className="line-clamp-4">{subGoal?.title ?? "Add a sub-goal"}</span>
+              <span className="line-clamp-4">{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>
             </button>;
           }
           const action = actionsByPosition.get(cellPosition);
