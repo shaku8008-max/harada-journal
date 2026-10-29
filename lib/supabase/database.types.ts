@@ -261,10 +261,7 @@ export type Database = {
     }
     Functions: {
       archive_sub_goal: {
-        Args: {
-          p_chart_id: string
-          p_sub_goal_id: string
-        }
+        Args: { p_chart_id: string; p_sub_goal_id: string }
         Returns: undefined
       }
     }
