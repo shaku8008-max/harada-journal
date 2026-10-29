@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { saveAction, saveChart, saveSubGoal } from "@/app/chart-actions";
-import { positionHints } from "@/lib/position-hints";
+import { positionHints, positionStyle } from "@/lib/position-hints";
 
 type DraftSubGoal = { id?: string; position: number; title: string };
 type DraftAction = {
