@@ -260,7 +260,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      archive_sub_goal: {
+        Args: {
+          p_chart_id: string
+          p_sub_goal_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

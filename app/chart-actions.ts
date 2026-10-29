@@ -36,7 +36,7 @@ type ActionInput = {
 };
 
 function cleanText(value: string | undefined) {
-  return value?.trim() ?? "";
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function validateTitle(title: string) {
@@ -49,11 +49,12 @@ function validateTitle(title: string) {
 }
 
 function validatePosition(position: number) {
-  return Number.isInteger(position) && position >= 1 && position <= 8;
+  return typeof position === "number" && Number.isInteger(position) && position >= 1 && position <= 8;
 }
 
 function validateTargetDate(targetDate: string | undefined) {
   if (!targetDate) return null;
+  if (typeof targetDate !== "string") return "Choose a valid target date.";
   return /^\d{4}-\d{2}-\d{2}$/.test(targetDate)
     ? null
     : "Choose a valid target date.";
@@ -159,6 +160,7 @@ export async function saveAction(input: ActionInput): Promise<ActionResult> {
   const titleError = validateTitle(input.title);
   if (titleError) return { error: titleError };
   if (!validatePosition(input.position)) return { error: "Choose a valid action position." };
+  if (!['daily', 'weekly', 'one_off'].includes(input.kind)) return { error: "Choose a valid action rhythm." };
   if (!(await ownedChart(input.chartId, user.id))) {
     return { error: "That chart is no longer available." };
   }
@@ -239,20 +241,9 @@ export async function archiveSubGoal(input: { subGoalId: string; chartId: string
   }
 
   const supabase = await createClient();
-  const archivedAt = new Date().toISOString();
-  const { error: subGoalError } = await supabase
-    .from("sub_goals")
-    .update({ archived_at: archivedAt })
-    .eq("id", input.subGoalId)
-    .eq("chart_id", input.chartId)
-    .eq("user_id", user.id);
-  if (subGoalError) return { error: subGoalError.message };
-
-  const { error: actionError } = await supabase
-    .from("actions")
-    .update({ archived_at: archivedAt })
-    .eq("sub_goal_id", input.subGoalId)
-    .eq("user_id", user.id)
-    .is("archived_at", null);
-  return actionError ? { error: actionError.message } : {};
+  const { error } = await supabase.rpc("archive_sub_goal", {
+    p_chart_id: input.chartId,
+    p_sub_goal_id: input.subGoalId,
+  });
+  return error ? { error: error.message } : {};
 }
