@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { saveAction, saveChart, saveSubGoal } from "@/app/chart-actions";
+import { positionHints } from "@/lib/position-hints";
 
 type DraftSubGoal = { id?: string; position: number; title: string };
 type DraftAction = {
@@ -217,7 +218,7 @@ export function ChartWizard() {
               {subGoals.map((subGoal, index) => (
                 <label key={subGoal.position} className="grid gap-2 text-sm font-medium">
                   <span className="text-[var(--muted-ink)]">Direction {subGoal.position}</span>
-                  <input value={subGoal.title} onChange={(event) => setSubGoals((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, title: event.target.value } : item))} onBlur={() => saveOneSubGoal(index)} maxLength={160} placeholder="Leave open for now" className="min-h-12 rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 text-base font-normal outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20" />
+                  <input value={subGoal.title} onChange={(event) => setSubGoals((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, title: event.target.value } : item))} onBlur={() => saveOneSubGoal(index)} maxLength={160} placeholder={`e.g. ${positionHints[subGoal.position as keyof typeof positionHints]}`} className="min-h-12 rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 text-base font-normal outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20" />
                 </label>
               ))}
             </div>

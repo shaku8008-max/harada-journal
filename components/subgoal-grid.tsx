@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import type { ChartData } from "@/lib/charts";
 import { overviewPositions, type GridCell } from "@/lib/grid";
+import { actionHint, positionHints } from "@/lib/position-hints";
 
 function actionLabel(position: number, title: string | null, subGoalTitle: string) {
   return `Action ${position} of ${subGoalTitle || "empty sub-goal"}: ${title ?? "empty"}`;
@@ -13,7 +14,7 @@ export function SubGoalGrid({ data, position, onCellSelect }: { data: ChartData;
   const subGoal = data.subGoals.find((item) => item.position === position);
   const actions = data.actions.filter((action) => action.sub_goal_id === subGoal?.id);
   const actionsByPosition = new Map(actions.map((action) => [action.position, action]));
-  const subGoalTitle = subGoal?.title ?? "Open this direction";
+  const subGoalTitle = subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`;
   const centerCell: GridCell = {
     key: `sub-goal-${subGoal?.id ?? position}`,
     kind: "sub_goal",
@@ -45,7 +46,7 @@ export function SubGoalGrid({ data, position, onCellSelect }: { data: ChartData;
             ? { key: `action-${action.id}`, kind: "action", position: cellPosition, subGoalPosition: position, title: action.title, action }
             : { key: `action-empty-${position}-${cellPosition}`, kind: "action", position: cellPosition, subGoalPosition: position, title: null };
           return <button key={cell.key} type="button" onClick={() => onCellSelect(cell)} aria-label={actionLabel(cellPosition, action?.title ?? null, subGoalTitle)} className={`flex min-h-28 items-center rounded-xl border border-[var(--line)] p-3 text-left text-[15px] leading-6 transition hover:-translate-y-0.5 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)] sm:min-h-36 sm:p-5 ${action ? "bg-[var(--surface)] text-[var(--ink)]" : "bg-[var(--paper)] text-[var(--muted-ink)]"}`}>
-            <span className={action ? "line-clamp-4" : "italic"}>{action?.title ?? "Add an action"}</span>
+            <span className={action ? "line-clamp-4" : "italic"}>{action?.title ?? `e.g. ${actionHint}`}</span>
           </button>;
         })}
       </div>
