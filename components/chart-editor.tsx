@@ -13,7 +13,7 @@ export function ChartEditor({ data }: { data: ChartData }) {
   return (
     <>
       <ChartGrid data={data} onCellSelect={setCell} />
-      <CellEditor data={data} cell={cell} open={Boolean(cell)} onOpenChange={(open) => !open && setCell(null)} />
+      <CellEditor key={cell?.key ?? "closed"} data={data} cell={cell} open={Boolean(cell)} onOpenChange={(open) => !open && setCell(null)} />
     </>
   );
 }

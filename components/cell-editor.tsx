@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { archiveAction, archiveSubGoal, saveAction, saveChart, saveSubGoal } from "@/app/chart-actions";
@@ -38,23 +38,13 @@ function cellHeading(cell: GridCell) {
 
 export function CellEditor({ data, cell, open, onOpenChange }: CellEditorProps) {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [why, setWhy] = useState("");
-  const [targetDate, setTargetDate] = useState("");
-  const [kind, setKind] = useState<"daily" | "weekly" | "one_off">("daily");
-  const [weeklyTarget, setWeeklyTarget] = useState(3);
+  const [title, setTitle] = useState(() => cell?.title ?? "");
+  const [why, setWhy] = useState(() => cell?.chart?.why ?? "");
+  const [targetDate, setTargetDate] = useState(() => cell?.chart?.target_date ?? "");
+  const [kind, setKind] = useState<"daily" | "weekly" | "one_off">(() => cell?.action?.kind === "weekly" || cell?.action?.kind === "one_off" ? cell.action.kind : "daily");
+  const [weeklyTarget, setWeeklyTarget] = useState(() => cell?.action?.weekly_target ?? 3);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    if (!cell) return;
-    setTitle(cell.title ?? "");
-    setWhy(cell.chart?.why ?? "");
-    setTargetDate(cell.chart?.target_date ?? "");
-    setKind(cell.action?.kind === "weekly" || cell.action?.kind === "one_off" ? cell.action.kind : "daily");
-    setWeeklyTarget(cell.action?.weekly_target ?? 3);
-    setError(null);
-  }, [cell]);
 
   if (!cell) return null;
   const activeCell = cell;
