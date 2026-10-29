@@ -1,5 +1,5 @@
 alter table public.actions
-  add constraint actions_weekly_target_check
+  add constraint actions_weekly_target_matches_kind
   check (
     (kind = 'weekly' and weekly_target is not null)
     or (kind <> 'weekly' and weekly_target is null)
