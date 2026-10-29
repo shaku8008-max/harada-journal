@@ -1,4 +1,7 @@
 import { requireUser } from "@/lib/supabase/require-user";
+import { getActiveChart } from "@/lib/charts";
+import { ChartWizard } from "@/components/chart-wizard";
+import { ChartWorkspace } from "@/components/chart-workspace";
 import { signOut } from "./actions";
 
 // The page reads the request-bound Supabase cookie for every authenticated visit.
@@ -6,31 +9,29 @@ export const instant = false;
 
 export default async function Home() {
   const user = await requireUser();
+  const chartData = await getActiveChart(user.id);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-stone-100 px-4 py-10 text-stone-950">
-      <section className="w-full max-w-lg rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-10">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">
-          Harada Journal
-        </p>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Your window is ready.
-        </h1>
-        <p className="mt-3 text-stone-600">
-          You are signed in as <span className="font-medium text-stone-950">{user.email}</span>.
-        </p>
-        <p className="mt-8 rounded-2xl bg-stone-100 p-4 text-sm leading-6 text-stone-600">
-          The goal chart and daily journal will appear here in the next phases.
-        </p>
-        <form action={signOut} className="mt-8">
-          <button
-            type="submit"
-            className="min-h-11 w-full rounded-full bg-stone-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950"
-          >
-            Sign out
-          </button>
-        </form>
-      </section>
+    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 text-[var(--ink)] sm:px-8 sm:py-10">
+      <div className="mx-auto w-full max-w-7xl">
+        <header className="mb-10 flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">
+              Harada Journal
+            </p>
+            <p className="mt-2 text-sm text-[var(--muted-ink)]">A quiet place to keep the window open.</p>
+          </div>
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="min-h-11 rounded-full border border-[var(--line)] bg-[var(--paper)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+            >
+              Sign out
+            </button>
+          </form>
+        </header>
+        {chartData ? <ChartWorkspace data={chartData} /> : <ChartWizard />}
+      </div>
     </main>
   );
 }
