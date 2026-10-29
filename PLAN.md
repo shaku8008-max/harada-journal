@@ -121,7 +121,7 @@ Compute in a pure, unit-tested TypeScript module first (move to SQL later only i
 
 1. **Login**: email magic link.
 2. **Onboarding**: create your chart (main goal, then sub-goals, then actions). Allow saving partially filled; a grid with empty cells is fine.
-3. **Chart (home)**: the 9x9 grid. Desktop: full grid with text. Phone: colour-only overview, tap a block to zoom into a readable 3x3. Tap a cell to edit title/type/archive.
+3. **Chart (home)**: a 3x3 overview with the main goal in the centre and eight coloured sub-goal tiles around it, each showing its action count. Tap the centre to edit the main goal. Tap any sub-goal tile to open its own readable 3x3 view, with that sub-goal in the centre and its eight actions around it. The expanded sub-goal is represented in the URL so refresh and browser Back work on desktop and phone. Tap any cell to edit its title/type/archive.
 4. **Today**: date (effective), journal textarea with local draft autosave, mood, and a checklist of today's relevant actions (all daily, weekly ones still short of target, open one-offs), grouped by sub-goal.
 5. **History**: list/calendar of past entries; open any day to edit or backfill.
 6. **Weekly review**: per sub-goal summary for the week plus a "what worked / what to change" free-text box.
