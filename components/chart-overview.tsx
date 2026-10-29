@@ -6,8 +6,6 @@ import type { ChartData } from "@/lib/charts";
 import type { GridCell } from "@/lib/grid";
 import { overviewPositions } from "@/lib/grid";
 import { positionHints, positionStyle } from "@/lib/position-hints";
-import { overviewPalette } from "@/lib/reveal-palettes";
-import { CanvasRevealCard } from "./canvas-reveal-card";
 
 function dateLabel(value: string | null) {
   if (!value) return null;
@@ -32,10 +30,10 @@ export function ChartOverview({ data, onMainSelect }: { data: ChartData; onMainS
         {overviewPositions.map((position) => {
           if (position === "centre") {
             return (
-              <button key="centre" type="button" onClick={() => onMainSelect(mainCell)} aria-label={`Main goal: ${data.chart.title}`} className="flex min-h-36 flex-col justify-center rounded-2xl border-2 border-[var(--ink)] bg-[var(--ink)] p-4 text-left text-white shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:min-h-48 sm:p-6">
-                <span className="text-sm font-medium uppercase tracking-[0.14em] text-white/70">Main goal</span>
+              <button key="centre" type="button" onClick={() => onMainSelect(mainCell)} aria-label={`Main goal: ${data.chart.title}`} className="flex min-h-36 flex-col justify-center rounded-2xl border-2 border-[var(--aether-lilac)] bg-[var(--surface)] p-4 text-left text-[var(--ink)] shadow-[0_12px_32px_rgba(0,0,0,0.34)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--aether-lilac)] sm:min-h-48 sm:p-6">
+                <span className="text-sm font-medium uppercase tracking-[0.14em] text-[var(--aether-lilac)]">Main goal</span>
                 <span className="mt-2 line-clamp-4 text-[15px] font-medium leading-6 sm:text-lg">{data.chart.title}</span>
-                {data.chart.target_date && <span className="mt-3 text-sm text-white/70">Target: {dateLabel(data.chart.target_date)}</span>}
+                {data.chart.target_date && <span className="mt-3 text-sm text-[var(--muted-ink)]">Target: {dateLabel(data.chart.target_date)}</span>}
               </button>
             );
           }
@@ -43,13 +41,11 @@ export function ChartOverview({ data, onMainSelect }: { data: ChartData; onMainS
           const subGoal = subGoalsByPosition.get(position);
           const actionCount = subGoal ? actionsBySubGoal.get(subGoal.id) ?? 0 : 0;
           return (
-            <CanvasRevealCard key={position} colors={overviewPalette(position)} style={positionStyle(position)} className="min-h-36 rounded-2xl sm:min-h-48">
-              <Link href={`/chart?subGoal=${position}`} aria-label={`Sub-goal ${position}, ${subGoal?.title ?? "empty"}: ${actionCount} of 8 actions`} className="flex h-full min-h-36 flex-col justify-between rounded-2xl border border-[var(--position-accent)] bg-[var(--position-background)] p-4 text-left text-[var(--position-text)] transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--position-accent)] sm:min-h-48 sm:p-6">
+            <Link key={position} href={`/chart?subGoal=${position}`} aria-label={`Sub-goal ${position}, ${subGoal?.title ?? "empty"}: ${actionCount} of 8 actions`} style={positionStyle(position)} className="flex min-h-36 flex-col justify-between rounded-2xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-4 text-left text-[var(--position-text)] shadow-[0_12px_32px_rgba(0,0,0,0.3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--position-accent)] sm:min-h-48 sm:p-6">
                 <span className="text-sm font-medium">Direction {position}</span>
                 <span className={`line-clamp-4 text-[15px] leading-6 sm:text-lg ${subGoal ? "font-medium" : "italic"}`}>{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>
                 <span className="text-sm">{actionCount}/8 actions</span>
               </Link>
-            </CanvasRevealCard>
           );
         })}
       </div>
