@@ -216,9 +216,9 @@ export function ChartWizard() {
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-ink)]">Think broadly: health, people, skills, places, resources, or anything else that helps the main goal. Empty directions can be filled from the grid later.</p>
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               {subGoals.map((subGoal, index) => (
-                <label key={subGoal.position} className="grid gap-2 text-sm font-medium">
-                  <span className="text-[var(--muted-ink)]">Direction {subGoal.position}</span>
-                  <input value={subGoal.title} onChange={(event) => setSubGoals((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, title: event.target.value } : item))} onBlur={() => saveOneSubGoal(index)} maxLength={160} placeholder={`e.g. ${positionHints[subGoal.position as keyof typeof positionHints]}`} className="min-h-12 rounded-2xl border border-[var(--line)] bg-[var(--paper)] px-4 text-base font-normal outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20" />
+                <label key={subGoal.position} style={positionStyle(subGoal.position)} className="grid gap-2 text-sm font-medium text-[var(--position-text)]">
+                  <span>Direction {subGoal.position}</span>
+                  <input value={subGoal.title} onChange={(event) => setSubGoals((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, title: event.target.value } : item))} onBlur={() => saveOneSubGoal(index)} maxLength={160} placeholder={`e.g. ${positionHints[subGoal.position as keyof typeof positionHints]}`} className="min-h-12 rounded-2xl border border-[var(--position-accent)] bg-[var(--position-background)] px-4 text-base font-normal outline-none placeholder:text-[var(--position-text)]/70 focus:border-[var(--position-accent)] focus:ring-2 focus:ring-[var(--position-accent)]/20" />
                 </label>
               ))}
             </div>

@@ -10,3 +10,13 @@ export const positionHints = {
 } as const;
 
 export const actionHint = "Walk 30 minutes";
+
+export function positionStyle(position: number): CSSProperties {
+  return {
+    "--position-background": `var(--position-${position}-background)`,
+    "--position-accent": `var(--position-${position}-accent)`,
+    "--position-text": `var(--position-${position}-text)`,
+    "--position-fill": `var(--position-${position}-fill)`,
+  } as CSSProperties;
+}
+import type { CSSProperties } from "react";
