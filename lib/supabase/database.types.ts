@@ -81,6 +81,7 @@ export type Database = {
       actions: {
         Row: {
           archived_at: string | null
+          created_at: string
           id: string
           kind: string
           position: number
@@ -91,6 +92,7 @@ export type Database = {
         }
         Insert: {
           archived_at?: string | null
+          created_at?: string
           id: string
           kind: string
           position: number
@@ -101,6 +103,7 @@ export type Database = {
         }
         Update: {
           archived_at?: string | null
+          created_at?: string
           id?: string
           kind?: string
           position?: number
