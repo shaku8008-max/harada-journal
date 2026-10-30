@@ -2,9 +2,9 @@ import type { Tables } from "@/lib/supabase/database.types";
 
 import { createClient } from "@/lib/supabase/server";
 
-export type ChartRecord = Tables<"charts">;
-export type SubGoalRecord = Tables<"sub_goals">;
-export type ActionRecord = Tables<"actions">;
+export type ChartRecord = Pick<Tables<"charts">, "id" | "title" | "why" | "target_date">;
+export type SubGoalRecord = Pick<Tables<"sub_goals">, "id" | "chart_id" | "position" | "title">;
+export type ActionRecord = Pick<Tables<"actions">, "id" | "sub_goal_id" | "position" | "title" | "kind" | "weekly_target">;
 
 export type ChartData = {
   chart: ChartRecord;
@@ -16,7 +16,7 @@ export async function getActiveChart(userId: string): Promise<ChartData | null> 
   const supabase = await createClient();
   const { data: chart, error: chartError } = await supabase
     .from("charts")
-    .select("*")
+    .select("id, title, why, target_date")
     .eq("user_id", userId)
     .eq("status", "active")
     .maybeSingle();
@@ -31,7 +31,7 @@ export async function getActiveChart(userId: string): Promise<ChartData | null> 
 
   const { data: subGoals, error: subGoalError } = await supabase
     .from("sub_goals")
-    .select("*")
+    .select("id, chart_id, position, title")
     .eq("chart_id", chart.id)
     .eq("user_id", userId)
     .is("archived_at", null)
@@ -45,7 +45,7 @@ export async function getActiveChart(userId: string): Promise<ChartData | null> 
   const { data: actions, error: actionError } = subGoalIds.length
     ? await supabase
         .from("actions")
-        .select("*")
+        .select("id, sub_goal_id, position, title, kind, weekly_target")
         .in("sub_goal_id", subGoalIds)
         .eq("user_id", userId)
         .is("archived_at", null)
