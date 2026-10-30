@@ -11,12 +11,10 @@ export default async function LoginPage({
   const error = Array.isArray(query.error) ? query.error[0] : query.error;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[var(--paper)] px-4 py-10 text-[var(--ink)]">
-      <section className="w-full max-w-md rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 shadow-[0_18px_60px_rgba(0,0,0,0.24)] sm:p-10">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">
-          Harada Journal
-        </p>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight">Come back to your window.</h1>
+    <main className="flex min-h-screen items-center justify-center bg-transparent px-4 py-10 text-[var(--ink)]">
+      <section className="w-full max-w-md rounded-3xl border border-[var(--line)] bg-[var(--surface)]/90 p-6 shadow-[0_24px_80px_rgb(0_0_0_/_0.3)] backdrop-blur-sm sm:p-10">
+        <div className="flex items-center gap-3"><span className="grid size-9 place-items-center rounded-xl bg-[var(--accent)] text-sm font-bold text-[var(--accent-foreground)]">H</span><p className="text-sm font-semibold tracking-tight text-[var(--ink)]">Harada Journal</p></div>
+        <h1 className="mt-8 text-3xl font-semibold tracking-[-0.045em]">Come back to your window.</h1>
         <p className="mt-3 text-[var(--muted-ink)]">
           Enter your email and we&apos;ll send you a one-click sign-in link.
         </p>

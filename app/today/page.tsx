@@ -47,7 +47,7 @@ export default async function TodayPage() {
   const groups = mapChartGroups(chart, date, profile.timezone, profile.day_start_hour, logRows);
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
+    <main className="min-h-screen bg-transparent px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl"><TopNav active="today" /><section className="mx-auto max-w-2xl">
         <TodayClient userId={user.id} date={date} yesterday={addDays(date, -1)} calendarDate={calendarDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
       </section></div>

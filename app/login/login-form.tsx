@@ -58,8 +58,8 @@ export function LoginForm() {
       >
         {isSubmitting ? "Sending link..." : "Send magic link"}
       </button>
-      {message && <p className="text-sm text-emerald-700">{message}</p>}
-      {error && <p className="text-sm text-red-700">{error}</p>}
+      {message && <p className="rounded-xl bg-emerald-400/10 px-4 py-3 text-sm text-emerald-300">{message}</p>}
+      {error && <p className="rounded-xl bg-[var(--destructive)]/10 px-4 py-3 text-sm text-[var(--destructive)]">{error}</p>}
     </form>
   );
 }

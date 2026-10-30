@@ -20,10 +20,10 @@ export default async function ChartPage({
   const expandedPosition = Number.isInteger(parsedSubGoal) && parsedSubGoal >= 1 && parsedSubGoal <= 8 ? parsedSubGoal : null;
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
+    <main className="min-h-screen bg-transparent px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl">
         <TopNav active="chart" />
-        <header className="mb-10 flex items-start justify-between gap-4">
+        <header className="mb-10 flex items-start justify-between gap-4 border-b border-[var(--line)]/70 pb-7">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">Harada Journal</p>
             <p className="mt-2 text-sm text-[var(--muted-ink)]">Your goal, opened out.</p>

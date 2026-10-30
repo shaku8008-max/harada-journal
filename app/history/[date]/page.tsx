@@ -44,7 +44,7 @@ export default async function HistoryDayPage({ params }: HistoryDayProps) {
   const start = weekStart(date);
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
+    <main className="min-h-screen bg-transparent px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl"><TopNav active="history" /><section className="mx-auto max-w-2xl">
         <HistoryControls date={date} yesterday={addDays(currentDate, -1)} previousDate={previousDate} nextHref={nextHref} />
         <TodayClient userId={user.id} date={date} isHistory calendarDate={currentDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />

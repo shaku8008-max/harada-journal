@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HistoryDateNotFound() {
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-10 text-[var(--ink)] sm:px-8">
+    <main className="min-h-screen bg-transparent px-4 py-10 text-[var(--ink)] sm:px-8">
       <section className="mx-auto max-w-xl rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">History</p>
         <h1 className="mt-3 text-3xl">That day is not available.</h1>

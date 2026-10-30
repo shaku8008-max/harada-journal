@@ -23,7 +23,7 @@ export function ChartOverview({ data, onMainSelect }: { data: ChartData; onMainS
     <div className="mx-auto w-full max-w-4xl">
       <div className="mb-5 text-center md:text-left">
         <p className="text-sm font-medium text-[var(--accent)]">Your open window</p>
-        <h1 className="mt-2 text-4xl tracking-tight sm:text-5xl">One goal, eight directions.</h1>
+        <h1 className="mt-2 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">One goal, eight directions.</h1>
         <p className="mt-3 text-base leading-7 text-[var(--muted-ink)]">Tap the centre to edit your goal. Choose a coloured direction to open its eight next moves.</p>
       </div>
 

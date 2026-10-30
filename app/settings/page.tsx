@@ -17,15 +17,15 @@ export default async function SettingsPage() {
   if (error) throw new Error(`Unable to load settings: ${error.message}`);
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
+    <main className="min-h-screen bg-transparent px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-2xl">
         <TopNav active="settings" />
         <header className="mb-10">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">Harada Journal</p>
-          <h1 className="mt-3 text-4xl tracking-tight sm:text-5xl">Settings</h1>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--accent)]">Preferences</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Settings</h1>
           <p className="mt-3 text-base leading-7 text-[var(--muted-ink)]">Set the timezone and day boundary used for your journal.</p>
         </header>
-        <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:p-8">
+        <section className="rounded-3xl border border-[var(--line)] bg-[var(--surface)]/90 p-5 shadow-[0_24px_80px_rgb(0_0_0_/_0.28)] backdrop-blur-sm sm:p-8">
           <SettingsForm
             displayName={profile?.display_name ?? ""}
             timezone={profile?.timezone ?? null}

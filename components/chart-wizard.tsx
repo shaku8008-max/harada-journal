@@ -163,7 +163,7 @@ export function ChartWizard() {
     <section className="mx-auto max-w-4xl">
       <div className="mb-8 max-w-2xl">
         <p className="text-sm font-medium text-[var(--accent)]">Start with one meaningful window</p>
-        <h1 className="mt-3 text-4xl leading-tight tracking-tight sm:text-5xl">
+        <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-[-0.05em] sm:text-5xl">
           Make room for the goal you want to grow.
         </h1>
         <p className="mt-4 max-w-xl text-base leading-7 text-[var(--muted-ink)]">
@@ -183,7 +183,7 @@ export function ChartWizard() {
         ))}
       </div>
 
-      <div className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[0_18px_60px_rgba(63,52,40,0.06)] sm:p-8">
+      <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)]/90 p-5 shadow-[0_24px_80px_rgb(0_0_0_/_0.24)] backdrop-blur-sm sm:p-8">
         {step === 1 && (
           <div>
             <h2 className="text-3xl">Name your main goal</h2>

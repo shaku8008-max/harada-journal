@@ -39,35 +39,36 @@
 
 :root {
   --aether-lilac: #c49aff;
-  --paper: #090a10;
-  --surface: #12141d;
+  --paper: #0b0c11;
+  --surface: #141720;
+  --surface-raised: #1a1d28;
   --ink: #f4f1fb;
-  --muted-ink: #aaa6b8;
-  --line: #2d3040;
+  --muted-ink: #aaa8b6;
+  --line: #2f3342;
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: #12141d;
+  --card: #141720;
   --card-foreground: #f4f1fb;
-  --popover: #161824;
+  --popover: #1a1d28;
   --popover-foreground: #f4f1fb;
   --primary: #f4f1fb;
   --primary-foreground: #090a10;
-  --secondary: #1c1f2b;
+  --secondary: #202431;
   --secondary-foreground: #f4f1fb;
-  --muted: #1c1f2b;
+  --muted: #202431;
   --muted-foreground: #aaa6b8;
   --accent: #a878ea;
   --accent-foreground: #100d18;
   --destructive: #f07b85;
-  --border: #2d3040;
-  --input: #2d3040;
+  --border: #2f3342;
+  --input: #2f3342;
   --ring: #c49aff;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --position-1-background: #33232d;
   --position-1-accent: #f2a07d;
   --position-1-text: #fff4ef;
@@ -106,8 +107,9 @@
   h1,
   h2,
   h3 {
-    font-family: Georgia, "Times New Roman", serif;
-    font-weight: 500;
+    font-family: var(--font-geist-sans);
+    font-weight: 560;
+    letter-spacing: -0.035em;
   }
 
   * {
@@ -115,9 +117,23 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: radial-gradient(circle at 88% -8%, rgb(164 125 235 / 0.12), transparent 28rem), radial-gradient(circle at 8% 92%, rgb(63 86 122 / 0.08), transparent 24rem);
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;
+    color-scheme: dark;
+  }
+
+  input,
+  textarea,
+  select {
+    color-scheme: dark;
+  }
+
+  ::selection {
+    background: rgb(196 154 255 / 0.32);
+    color: var(--ink);
   }
 }
 
@@ -162,6 +178,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
   ::view-transition-group(.flow-morph),
   ::view-transition-image-pair(.flow-morph) {
     animation-duration: 0ms;
