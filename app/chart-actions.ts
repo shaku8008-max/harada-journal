@@ -142,6 +142,7 @@ export async function saveSubGoal(input: SubGoalInput): Promise<ActionResult> {
       .eq("id", input.subGoalId)
       .eq("chart_id", input.chartId)
       .eq("user_id", user.id)
+      .is("archived_at", null)
       .select("id")
       .maybeSingle();
     return error ? { error: error.message } : { id: data?.id ?? input.subGoalId };
@@ -217,11 +218,12 @@ export async function saveAction(input: ActionInput): Promise<ActionResult> {
         title: values.title,
         weekly_target: values.weekly_target,
       })
-      .eq("id", input.actionId)
-      .eq("sub_goal_id", input.subGoalId)
-      .eq("user_id", user.id)
-      .select("id")
-      .maybeSingle();
+        .eq("id", input.actionId)
+        .eq("sub_goal_id", input.subGoalId)
+        .eq("user_id", user.id)
+        .is("archived_at", null)
+        .select("id")
+        .maybeSingle();
     return error ? { error: error.message } : { id: data?.id ?? input.actionId };
   }
 
@@ -266,11 +268,23 @@ export async function archiveAction(input: { actionId: string; chartId: string }
   }
 
   const supabase = await createClient();
+  const { data: action, error: actionError } = await supabase
+    .from("actions")
+    .select("id, sub_goals!inner(chart_id)")
+    .eq("id", input.actionId)
+    .eq("user_id", user.id)
+    .eq("sub_goals.chart_id", input.chartId)
+    .is("archived_at", null)
+    .maybeSingle();
+  if (actionError) return { error: actionError.message };
+  if (!action) return { error: "That chart is no longer available." };
+
   const { error } = await supabase
     .from("actions")
     .update({ archived_at: new Date().toISOString() })
     .eq("id", input.actionId)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .is("archived_at", null);
   return error ? { error: error.message } : {};
 }
 
