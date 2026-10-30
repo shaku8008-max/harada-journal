@@ -1,7 +1,7 @@
 import { getActiveChart } from "@/lib/charts";
 import { requireUser } from "@/lib/supabase/require-user";
 import { ChartWizard } from "@/components/chart-wizard";
-import { ChartWorkspace } from "@/components/chart-workspace";
+import { ChartEditor } from "@/components/chart-editor";
 import { signOut } from "@/app/actions";
 
 export const instant = false;
@@ -30,7 +30,7 @@ export default async function ChartPage({
             <button type="submit" className="min-h-11 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">Sign out</button>
           </form>
         </header>
-        {chartData ? <ChartWorkspace data={chartData} expandedPosition={expandedPosition} /> : <ChartWizard />}
+        {chartData ? <ChartEditor data={chartData} expandedPosition={expandedPosition} /> : <ChartWizard />}
       </div>
     </main>
   );

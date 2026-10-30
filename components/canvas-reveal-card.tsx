@@ -4,7 +4,7 @@ import { useReducedMotion } from "framer-motion";
 import { useState, type CSSProperties, type ReactNode } from "react";
 
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 type CanvasRevealCardProps = {
   children: ReactNode;
