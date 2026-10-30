@@ -42,7 +42,7 @@ export default async function TodayPage() {
   const start = weekStart(date);
   const [{ data: chartData, error: chartError }, { data: journal, error: journalError }] = await Promise.all([
     supabase.from("charts").select("id, title, sub_goals(id, title, position, archived_at, actions(id, title, position, kind, weekly_target, archived_at))").eq("user_id", user.id).eq("status", "active").maybeSingle(),
-    supabase.from("journal_entries").select("body, mood, updated_at").eq("user_id", user.id).eq("entry_date", date).maybeSingle(),
+    supabase.from("journal_entries").select("body, mood, created_at, updated_at").eq("user_id", user.id).eq("entry_date", date).maybeSingle(),
   ]);
   if (chartError) throw new Error(chartError.message);
   if (journalError) throw new Error(journalError.message);
@@ -58,6 +58,7 @@ export default async function TodayPage() {
       position: action.position,
       kind: action.kind as "daily" | "weekly" | "one_off",
       weeklyTarget: action.weekly_target,
+      archivedAt: action.archived_at,
     })),
   }));
   const actionIds = groups.flatMap((group) => group.actions.map((action) => action.id));
@@ -77,7 +78,7 @@ export default async function TodayPage() {
   return (
     <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl"><TopNav active="today" /><section className="mx-auto max-w-2xl">
-        <TodayClient userId={user.id} date={date} calendarDate={calendarDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={(logs ?? []).map((log) => ({ actionId: log.action_id, date: log.log_date }))} journal={journal ? { body: journal.body, mood: journal.mood, updatedAt: journal.updated_at } : null} />
+        <TodayClient userId={user.id} date={date} calendarDate={calendarDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={(logs ?? []).map((log) => ({ actionId: log.action_id, date: log.log_date }))} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
       </section></div>
     </main>
   );
