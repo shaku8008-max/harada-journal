@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/supabase/require-user";
 import { createClient } from "@/lib/supabase/server";
+import { TopNav } from "@/components/top-nav";
 import { SettingsForm } from "./settings-form";
 
 export const instant = false;
@@ -16,8 +17,9 @@ export default async function SettingsPage() {
   if (error) throw new Error(`Unable to load settings: ${error.message}`);
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 text-[var(--ink)] sm:px-8 sm:py-10">
+    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-2xl">
+        <TopNav active="settings" />
         <header className="mb-10">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">Harada Journal</p>
           <h1 className="mt-3 text-4xl tracking-tight sm:text-5xl">Settings</h1>

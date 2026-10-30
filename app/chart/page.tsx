@@ -2,6 +2,7 @@ import { getActiveChart } from "@/lib/charts";
 import { requireUser } from "@/lib/supabase/require-user";
 import { ChartWizard } from "@/components/chart-wizard";
 import { ChartEditor } from "@/components/chart-editor";
+import { TopNav } from "@/components/top-nav";
 import { signOut } from "@/app/actions";
 
 export const instant = false;
@@ -19,8 +20,9 @@ export default async function ChartPage({
   const expandedPosition = Number.isInteger(parsedSubGoal) && parsedSubGoal >= 1 && parsedSubGoal <= 8 ? parsedSubGoal : null;
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 text-[var(--ink)] sm:px-8 sm:py-10">
+    <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl">
+        <TopNav active="chart" />
         <header className="mb-10 flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">Harada Journal</p>
