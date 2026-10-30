@@ -1,5 +1,5 @@
 import { TopNav } from "@/components/top-nav";
-import { effectiveDate, weekStart } from "@/lib/dates";
+import { addDays, effectiveDate, weekStart } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/require-user";
 import { actionIdsForKind, chartActionIds, mapChartGroups, type ChartData } from "@/lib/today-data";
@@ -49,7 +49,7 @@ export default async function TodayPage() {
   return (
     <main className="min-h-screen bg-[var(--paper)] px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl"><TopNav active="today" /><section className="mx-auto max-w-2xl">
-        <TodayClient userId={user.id} date={date} calendarDate={calendarDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
+        <TodayClient userId={user.id} date={date} yesterday={addDays(date, -1)} calendarDate={calendarDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
       </section></div>
     </main>
   );

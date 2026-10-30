@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { CSSProperties } from "react";
+import Link from "next/link";
 
 import { saveJournalEntry, toggleActionLog } from "@/app/today-actions";
 
@@ -20,6 +21,7 @@ export type TodayClientProps = {
   userId: string;
   date: string;
   isHistory?: boolean;
+  yesterday?: string;
   calendarDate: string;
   dayStartHour: number;
   weekStart: string;
@@ -56,7 +58,7 @@ function formatTimestamp(value: string) {
   return new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
-export function TodayClient({ userId, date, isHistory = false, calendarDate, dayStartHour, weekStart, groups, logs, journal }: TodayClientProps) {
+export function TodayClient({ userId, date, isHistory = false, yesterday, calendarDate, dayStartHour, weekStart, groups, logs, journal }: TodayClientProps) {
   const [doneIds, setDoneIds] = useState(() => new Set(logs.filter((log) => log.date === date).map((log) => log.actionId)));
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -187,6 +189,7 @@ export function TodayClient({ userId, date, isHistory = false, calendarDate, day
         <h1 className="mt-3 text-4xl tracking-tight sm:text-5xl">{friendlyDate(date)}</h1>
         {!isHistory && date !== calendarDate && <p className="mt-2 text-sm text-[var(--accent)]">Counting as {friendlyWeekday(date)} until {dayStartHour}:00</p>}
         <p className="mt-3 text-base leading-7 text-[var(--muted-ink)]">Small steps, kept visible.</p>
+        {!isHistory && yesterday && <Link href={`/history/${yesterday}`} className="mt-5 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 text-sm font-medium hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">Yesterday</Link>}
       </header>
       <section className="mt-8 rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-2xl shadow-black/10 sm:p-7" aria-labelledby="journal-heading">
         <div className="flex items-start justify-between gap-4">
