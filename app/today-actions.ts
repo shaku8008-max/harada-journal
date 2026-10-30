@@ -1,6 +1,7 @@
 "use server";
 
 import { effectiveDate, isValidDateString } from "@/lib/dates";
+import { isActionLiveOnDate } from "@/lib/action-dates";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/require-user";
 
@@ -8,7 +9,7 @@ const MAX_BODY_LENGTH = 20_000;
 
 export type TodayActionResult = { error?: string };
 
-async function todayForUser(userId: string) {
+async function userDaySettings(userId: string) {
   const supabase = await createClient();
   const { data: profile, error } = await supabase
     .from("profiles")
@@ -17,7 +18,7 @@ async function todayForUser(userId: string) {
     .single();
 
   if (error || !profile) throw new Error(error?.message ?? "Your profile is unavailable.");
-  return effectiveDate(new Date(), profile.timezone, profile.day_start_hour);
+  return profile;
 }
 
 function validateDate(date: unknown): date is string {
@@ -29,20 +30,23 @@ export async function toggleActionLog(actionId: string, date: string): Promise<T
   if (typeof actionId !== "string" || !actionId) return { error: "That action is not available." };
   if (!validateDate(date)) return { error: "Choose a valid date." };
 
-  const currentDate = await todayForUser(user.id);
+  const profile = await userDaySettings(user.id);
+  const currentDate = effectiveDate(new Date(), profile.timezone, profile.day_start_hour);
   if (date > currentDate) return { error: "Future actions cannot be checked off." };
 
   const supabase = await createClient();
   const { data: action, error: actionError } = await supabase
     .from("actions")
-    .select("id, sub_goals!inner(chart_id, charts!inner(status))")
+    .select("id, created_at, archived_at, sub_goals!inner(chart_id, charts!inner(status))")
     .eq("id", actionId)
     .eq("user_id", user.id)
-    .is("archived_at", null)
     .eq("sub_goals.charts.status", "active")
     .maybeSingle();
   if (actionError) return { error: actionError.message };
   if (!action) return { error: "That action is no longer available." };
+  if (!isActionLiveOnDate({ createdAt: action.created_at, archivedAt: action.archived_at }, date, profile.timezone, profile.day_start_hour)) {
+    return { error: "That action was not available on this day." };
+  }
 
   const { data: existing, error: existingError } = await supabase
     .from("action_logs")
@@ -85,7 +89,8 @@ export async function saveJournalEntry(
     return { error: "Mood must be between 1 and 5." };
   }
 
-  const currentDate = await todayForUser(user.id);
+  const profile = await userDaySettings(user.id);
+  const currentDate = effectiveDate(new Date(), profile.timezone, profile.day_start_hour);
   if (date > currentDate) return { error: "Future entries cannot be saved." };
 
   const supabase = await createClient();
