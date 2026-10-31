@@ -10,16 +10,14 @@ import { SubGoalGrid } from "./subgoal-grid";
 import type { ProgressResult, ProgressWindow } from "@/lib/progress";
 import { FinishChart } from "./finish-chart";
 
-export function ChartEditor({ data, expandedPosition, progress, window }: { data: ChartData; expandedPosition: number | null; progress: ProgressResult; window: ProgressWindow }) {
+export function ChartEditor({ data, expandedPosition, progress, window, readOnly = false }: { data: ChartData; expandedPosition: number | null; progress: ProgressResult; window: ProgressWindow; readOnly?: boolean }) {
   const [cell, setCell] = useState<GridCell | null>(null);
 
   return (
     <>
-      <div className="mb-6 flex justify-end">
-        <FinishChart chartId={data.chart.id} />
-      </div>
-      {expandedPosition ? <SubGoalGrid data={data} position={expandedPosition} onCellSelect={setCell} progress={progress} window={window} /> : <ChartOverview data={data} onMainSelect={setCell} progress={progress} window={window} />}
-      <CellEditor key={cell?.key ?? "closed"} data={data} cell={cell} open={Boolean(cell)} onOpenChange={(open) => !open && setCell(null)} />
+      {!readOnly && <div className="mb-6 flex justify-end"><FinishChart chartId={data.chart.id} /></div>}
+      {expandedPosition ? <SubGoalGrid data={data} position={expandedPosition} onCellSelect={setCell} progress={progress} window={window} readOnly={readOnly} /> : <ChartOverview data={data} onMainSelect={setCell} progress={progress} window={window} readOnly={readOnly} />}
+      {!readOnly && <CellEditor key={cell?.key ?? "closed"} data={data} cell={cell} open={Boolean(cell)} onOpenChange={(open) => !open && setCell(null)} />}
     </>
   );
 }
