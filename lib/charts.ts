@@ -81,7 +81,8 @@ export async function getActionLogsForProgress(
   const logs: ActionLogRecord[] = [];
   const pageSize = 1000;
   let offset = 0;
-  const dateFilter = `and(log_date.gte.${startDate},log_date.lte.${endDate})`;
+  const actionFilter = `action_id.in.(${actionIds.join(",")})`;
+  const dateFilter = `and(log_date.gte.${startDate},log_date.lte.${endDate},${actionFilter})`;
   const oneOffFilter = oneOffActionIds.length ? `action_id.in.(${oneOffActionIds.join(",")})` : null;
 
   // Supabase defaults to 1,000 rows; paginate until a short page so history cannot truncate silently.
