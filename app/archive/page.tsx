@@ -7,6 +7,9 @@ import { calculateProgress, progressWindowStart } from "@/lib/progress";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/require-user";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
+import { PageFallback } from "@/components/page-fallback";
 
 export const instant = false;
 
@@ -14,7 +17,12 @@ function dateLabel(value: string | null) {
   return value ? new Intl.DateTimeFormat("en-AU", { dateStyle: "medium" }).format(new Date(value)) : "Unknown";
 }
 
-export default async function ArchivePage() {
+export default function ArchivePage() {
+  return <Suspense fallback={<PageFallback label="Loading your archive..." />}><ArchivePageContent /></Suspense>;
+}
+
+async function ArchivePageContent() {
+  await connection();
   const user = await requireUser();
   const supabase = await createClient();
   const [{ data: profile, error: profileError }, charts] = await Promise.all([

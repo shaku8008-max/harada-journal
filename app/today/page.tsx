@@ -6,10 +6,18 @@ import { actionIdsForKind, chartActionIds, mapChartGroups, type ChartData } from
 
 import { TodayClient } from "./today-client";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
+import { PageFallback } from "@/components/page-fallback";
 
 export const instant = false;
 
-export default async function TodayPage() {
+export default function TodayPage() {
+  return <Suspense fallback={<PageFallback label="Loading today..." />}><TodayPageContent /></Suspense>;
+}
+
+async function TodayPageContent() {
+  await connection();
   const user = await requireUser();
   const supabase = await createClient();
   const { data: profile, error: profileError } = await supabase

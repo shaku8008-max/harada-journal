@@ -1,4 +1,7 @@
 import { notFound, redirect } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
+import { PageFallback } from "@/components/page-fallback";
 
 import { TopNav } from "@/components/top-nav";
 import { addDays, compareDates, effectiveDate, isValidDateString, weekStart } from "@/lib/dates";
@@ -13,7 +16,12 @@ export const instant = false;
 
 type HistoryDayProps = { params: Promise<{ date: string }> };
 
-export default async function HistoryDayPage({ params }: HistoryDayProps) {
+export default function HistoryDayPage(props: HistoryDayProps) {
+  return <Suspense fallback={<PageFallback label="Loading this day..." />}><HistoryDayPageContent {...props} /></Suspense>;
+}
+
+async function HistoryDayPageContent({ params }: HistoryDayProps) {
+  await connection();
   const { date } = await params;
   const user = await requireUser();
   const supabase = await createClient();

@@ -8,6 +8,9 @@ import { calculateProgress, progressWindowStart, type ProgressWindow } from "@/l
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/require-user";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
+import { PageFallback } from "@/components/page-fallback";
 
 export const instant = false;
 
@@ -15,7 +18,14 @@ function dateLabel(value: string | null) {
   return value ? new Intl.DateTimeFormat("en-AU", { dateStyle: "long" }).format(new Date(value)) : "Unknown";
 }
 
-export default async function ArchivedChartPage({ params, searchParams }: { params: Promise<{ chartId: string }>; searchParams: Promise<{ subGoal?: string | string[] | undefined; window?: string | string[] | undefined }> }) {
+type ArchivedChartPageProps = { params: Promise<{ chartId: string }>; searchParams: Promise<{ subGoal?: string | string[] | undefined; window?: string | string[] | undefined }> };
+
+export default function ArchivedChartPage(props: ArchivedChartPageProps) {
+  return <Suspense fallback={<PageFallback label="Loading this archived chart..." />}><ArchivedChartPageContent {...props} /></Suspense>;
+}
+
+async function ArchivedChartPageContent({ params, searchParams }: ArchivedChartPageProps) {
+  await connection();
   const { chartId } = await params;
   const user = await requireUser();
   const query = await searchParams;

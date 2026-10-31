@@ -9,14 +9,24 @@ import { effectiveDate } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import { getActionLogsForProgress } from "@/lib/charts";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
+import { PageFallback } from "@/components/page-fallback";
 
 export const instant = false;
 
-export default async function ChartPage({
+export default function ChartPage(props: {
+  searchParams: Promise<{ subGoal?: string | string[] | undefined; window?: string | string[] | undefined }>;
+}) {
+  return <Suspense fallback={<PageFallback />}><ChartPageContent {...props} /></Suspense>;
+}
+
+async function ChartPageContent({
   searchParams,
 }: {
   searchParams: Promise<{ subGoal?: string | string[] | undefined; window?: string | string[] | undefined }>;
 }) {
+  await connection();
   const user = await requireUser();
   const query = await searchParams;
   const supabase = await createClient();

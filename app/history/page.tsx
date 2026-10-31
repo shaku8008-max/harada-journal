@@ -7,6 +7,9 @@ import { requireUser } from "@/lib/supabase/require-user";
 
 import { HistoryControls } from "./history-controls";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
+import { PageFallback } from "@/components/page-fallback";
 
 export const instant = false;
 
@@ -16,7 +19,12 @@ function friendlyDate(date: string) {
   return new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
 }
 
-export default async function HistoryPage({ searchParams }: HistoryPageProps) {
+export default function HistoryPage(props: HistoryPageProps) {
+  return <Suspense fallback={<PageFallback label="Loading history..." />}><HistoryPageContent {...props} /></Suspense>;
+}
+
+async function HistoryPageContent({ searchParams }: HistoryPageProps) {
+  await connection();
   const user = await requireUser();
   const supabase = await createClient();
   const { data: profile, error: profileError } = await supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).maybeSingle();
