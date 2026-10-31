@@ -118,6 +118,30 @@ export async function saveChart(input: ChartInput): Promise<ActionResult> {
   return error ? { error: error.message } : { id: data.id };
 }
 
+export async function archiveChart(input: { chartId: string }): Promise<ActionResult> {
+  const user = await requireUser();
+  if (typeof input.chartId !== "string" || !input.chartId) return { error: "That chart is no longer available." };
+
+  const supabase = await createClient();
+  const { data: chart, error: chartError } = await supabase
+    .from("charts")
+    .select("id, status")
+    .eq("id", input.chartId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (chartError) return { error: chartError.message };
+  if (!chart) return { error: "That chart is no longer available." };
+  if (chart.status !== "active") return { error: "That chart is already archived." };
+
+  const { error } = await supabase
+    .from("charts")
+    .update({ status: "archived", archived_at: new Date().toISOString() })
+    .eq("id", input.chartId)
+    .eq("user_id", user.id)
+    .eq("status", "active");
+  return error ? { error: error.message } : {};
+}
+
 export async function saveSubGoal(input: SubGoalInput): Promise<ActionResult> {
   const user = await requireUser();
   const titleError = validateTitle(input.title);

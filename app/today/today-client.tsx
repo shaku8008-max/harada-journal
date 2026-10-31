@@ -190,6 +190,7 @@ export function TodayClient({ userId, date, isHistory = false, yesterday, calend
         {!isHistory && date !== calendarDate && <p className="mt-2 text-sm text-[var(--accent)]">Counting as {friendlyWeekday(date)} until {dayStartHour}:00</p>}
         <p className="mt-3 text-base leading-7 text-[var(--muted-ink)]">Small steps, kept visible.</p>
         {!isHistory && yesterday && <Link href={`/history/${yesterday}`} className="mt-5 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 text-sm font-medium hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">Yesterday</Link>}
+        {!isHistory && groups.length === 0 && <Link href="/chart" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-[var(--accent)] px-5 text-sm font-medium text-[var(--accent-foreground)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">Create a chart</Link>}
       </header>
       <section className="mt-8 rounded-3xl border border-[var(--line)] border-t-[var(--accent)]/70 bg-[var(--surface)]/90 p-5 shadow-[0_24px_80px_rgb(0_0_0_/_0.22)] backdrop-blur-sm sm:p-7" aria-labelledby="journal-heading">
         <div className="flex items-start justify-between gap-4">
