@@ -7,6 +7,7 @@ import type { ChartData } from "@/lib/charts";
 import { overviewPositions, type GridCell } from "@/lib/grid";
 import { actionHint, positionHints, positionStyle } from "@/lib/position-hints";
 import type { ProgressResult, ProgressWindow } from "@/lib/progress";
+import { LinkPending } from "@/components/link-pending";
 
 function actionLabel(position: number, title: string | null, subGoalTitle: string) {
   return `Action ${position} of ${subGoalTitle || "empty sub-goal"}: ${title ?? "empty"}`;
@@ -38,8 +39,9 @@ export function SubGoalGrid({ data, position, onCellSelect, progress: _progress,
 
   return (
     <section className="mx-auto w-full max-w-2xl">
-       <Link href={readOnly ? `/archive/${data.chart.id}?window=${_window}` : `/chart?window=${_window}`} transitionTypes={["nav-back"]} className="mb-5 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
-        ← Back to overview
+        <Link href={readOnly ? `/archive/${data.chart.id}?window=${_window}` : `/chart?window=${_window}`} transitionTypes={["nav-back"]} className="relative mb-5 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
+         ← Back to overview
+         <LinkPending />
       </Link>
       <div className="mb-6" style={positionStyle(position)}>
         <p className="text-sm font-medium text-[var(--accent)]">Direction {position}</p>

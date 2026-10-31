@@ -8,6 +8,7 @@ import type { GridCell } from "@/lib/grid";
 import { overviewPositions } from "@/lib/grid";
 import { positionHints, positionStyle } from "@/lib/position-hints";
 import type { ProgressResult, ProgressWindow } from "@/lib/progress";
+import { LinkPending } from "@/components/link-pending";
 
 function dateLabel(value: string | null) {
   if (!value) return null;
@@ -41,7 +42,7 @@ export function ChartOverview({ data, onMainSelect, progress: _progress, window:
         {(["week", "30d", "all"] as const).map((item) => {
           const label = item === "week" ? "This week" : item === "30d" ? "Last 30 days" : "All time";
           const active = _window === item;
-           return <Link key={item} href={readOnly ? `/archive/${data.chart.id}?window=${item}` : `/chart?window=${item}`} aria-current={active ? "page" : undefined} className={`flex min-h-9 flex-1 items-center justify-center rounded-full px-3 text-[15px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:flex-none ${active ? "bg-[var(--accent)] text-[var(--accent-foreground)]" : "text-[var(--muted-ink)] hover:text-[var(--ink)]"}`}>{label}</Link>;
+            return <Link key={item} href={readOnly ? `/archive/${data.chart.id}?window=${item}` : `/chart?window=${item}`} aria-current={active ? "page" : undefined} className={`relative flex min-h-9 flex-1 items-center justify-center rounded-full px-3 text-[15px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:flex-none ${active ? "bg-[var(--accent)] text-[var(--accent-foreground)]" : "text-[var(--muted-ink)] hover:text-[var(--ink)]"}`}>{label}<LinkPending /></Link>;
         })}
       </nav>
 
@@ -66,6 +67,7 @@ export function ChartOverview({ data, onMainSelect, progress: _progress, window:
             <ViewTransition key={position} name={`flow-subgoal-${position}`} share="flow-morph" default="none">
                <Link href={readOnly ? `/archive/${data.chart.id}?subGoal=${position}&window=${_window}` : `/chart?subGoal=${position}&window=${_window}`} transitionTypes={["nav-forward"]} aria-label={`Sub-goal ${position}, ${subGoal?.title ?? "empty"}: ${scoreDescription}, ${actionCount} of 8 actions`} style={{ ...positionStyle(position), ...progressStyle(score, position) }} className="progress-fill relative isolate flex min-h-36 flex-col justify-between overflow-hidden rounded-2xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-4 text-left text-[var(--position-text)] shadow-[0_12px_32px_rgba(0,0,0,0.3)] motion-safe:transition-[transform,filter] motion-safe:hover:-translate-y-0.5 motion-safe:hover:brightness-110 motion-safe:active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--position-accent)] sm:min-h-48 sm:p-6">
                  <span aria-hidden="true" className="progress-fill-layer pointer-events-none absolute inset-x-0 bottom-0 z-0 origin-bottom scale-y-[var(--progress-scale)] bg-[var(--position-fill)]" />
+                 <LinkPending />
                  <span className="relative z-10">
                    <span className="text-sm font-medium">Direction {position}</span>
                    <span className={`line-clamp-4 text-[15px] leading-6 sm:text-lg ${subGoal ? "font-medium" : "italic"}`}>{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>

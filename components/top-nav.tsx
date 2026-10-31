@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LinkPending } from "@/components/link-pending";
 
 const items = [
   ["chart", "Chart", "/chart"],
@@ -22,9 +23,10 @@ export function TopNav({ active }: { active: string }) {
             key={key}
             href={href}
             aria-current={active === key ? "page" : undefined}
-            className={`flex min-h-11 items-center justify-center rounded-xl px-2 text-[15px] font-medium transition-[background-color,color,transform] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${active === key ? "bg-[var(--accent)] text-[var(--accent-foreground)] shadow-[0_6px_20px_rgb(164_120_234_/_0.18)]" : "text-[var(--muted-ink)] hover:bg-[var(--paper)] hover:text-[var(--ink)]"}`}
+            className={`relative flex min-h-11 items-center justify-center rounded-xl px-2 text-[15px] font-medium transition-[background-color,color,transform] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${active === key ? "bg-[var(--accent)] text-[var(--accent-foreground)] shadow-[0_6px_20px_rgb(164_120_234_/_0.18)]" : "text-[var(--muted-ink)] hover:bg-[var(--paper)] hover:text-[var(--ink)]"}`}
           >
             {label}
+            <LinkPending />
           </Link>
         ))}
         </div>
