@@ -4,6 +4,7 @@ const items = [
   ["chart", "Chart", "/chart"],
   ["today", "Today", "/today"],
   ["history", "History", "/history"],
+  ["archive", "Archive", "/archive"],
   ["settings", "Settings", "/settings"],
 ] as const;
 
@@ -15,7 +16,7 @@ export function TopNav({ active }: { active: string }) {
           <span className="grid size-7 place-items-center rounded-lg bg-[var(--accent)] text-xs font-bold text-[var(--accent-foreground)]">H</span>
           <span>Harada</span>
         </Link>
-        <div className="grid flex-1 grid-cols-4 gap-1 md:max-w-xl">
+        <div className="grid flex-1 grid-cols-5 gap-1 md:max-w-2xl">
         {items.map(([key, label, href]) => (
           <Link
             key={key}
