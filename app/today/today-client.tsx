@@ -21,6 +21,7 @@ export type TodayClientProps = {
   userId: string;
   date: string;
   isHistory?: boolean;
+  actionsReadOnly?: boolean;
   yesterday?: string;
   calendarDate: string;
   dayStartHour: number;
@@ -58,7 +59,7 @@ function formatTimestamp(value: string) {
   return new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
-export function TodayClient({ userId, date, isHistory = false, yesterday, calendarDate, dayStartHour, weekStart, groups, logs, journal }: TodayClientProps) {
+export function TodayClient({ userId, date, isHistory = false, actionsReadOnly = false, yesterday, calendarDate, dayStartHour, weekStart, groups, logs, journal }: TodayClientProps) {
   const [doneIds, setDoneIds] = useState(() => new Set(logs.filter((log) => log.date === date).map((log) => log.actionId)));
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -152,6 +153,7 @@ export function TodayClient({ userId, date, isHistory = false, yesterday, calend
   }
 
   async function toggle(actionId: string) {
+    if (actionsReadOnly) return;
     if (pendingAction) return;
     if (groups.some((group) => group.actions.some((action) => action.id === actionId && action.archivedAt))) return;
     setActionError(null);

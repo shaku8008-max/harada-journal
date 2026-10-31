@@ -22,14 +22,29 @@ export default async function HistoryDayPage({ params }: HistoryDayProps) {
   const currentDate = effectiveDate(new Date(), profile.timezone, profile.day_start_hour);
   if (!isValidDateString(date) || compareDates(date, currentDate) >= 0) notFound();
 
-  const [{ data: chartData, error: chartError }, { data: journal, error: journalError }] = await Promise.all([
-    supabase.from("charts").select("sub_goals(id, title, position, archived_at, actions(id, title, position, kind, weekly_target, created_at, archived_at))").eq("user_id", user.id).eq("status", "active").maybeSingle(),
+  const [{ data: charts, error: chartError }, { data: journal, error: journalError }] = await Promise.all([
+    supabase.from("charts").select("id, status, started_at, archived_at").eq("user_id", user.id),
     supabase.from("journal_entries").select("body, mood, created_at, updated_at").eq("user_id", user.id).eq("entry_date", date).maybeSingle(),
   ]);
   if (chartError) throw new Error(chartError.message);
   if (journalError) throw new Error(journalError.message);
 
-  const chart = chartData as ChartData;
+  const eligibleCharts = (charts ?? [])
+    .map((chart) => ({ chart, startedAt: chart.started_at ?? "", startedDate: chart.started_at ? effectiveDate(new Date(chart.started_at), profile.timezone, profile.day_start_hour) : null, finishedDate: chart.archived_at ? effectiveDate(new Date(chart.archived_at), profile.timezone, profile.day_start_hour) : null }))
+    .filter(({ chart, startedDate, finishedDate }) => Boolean(startedDate && startedDate <= date && (chart.status === "active" || (finishedDate && finishedDate >= date))))
+    .sort((left, right) => right.startedDate!.localeCompare(left.startedDate!) || right.startedAt.localeCompare(left.startedAt));
+  const selected = eligibleCharts[0]?.chart;
+  let chart: ChartData | null = null;
+  if (selected) {
+    const { data: subGoals, error: subGoalError } = await supabase.from("sub_goals").select("id, title, position, archived_at").eq("chart_id", selected.id).eq("user_id", user.id);
+    if (subGoalError) throw new Error(subGoalError.message);
+    const subGoalIds = (subGoals ?? []).map((subGoal) => subGoal.id);
+    const { data: actions, error: actionError } = subGoalIds.length
+      ? await supabase.from("actions").select("id, sub_goal_id, title, position, kind, weekly_target, created_at, archived_at").in("sub_goal_id", subGoalIds).eq("user_id", user.id)
+      : { data: [], error: null };
+    if (actionError) throw new Error(actionError.message);
+    chart = { sub_goals: (subGoals ?? []).map((subGoal) => ({ ...subGoal, actions: (actions ?? []).filter((action) => action.sub_goal_id === subGoal.id) })) };
+  }
   const actionIds = chartActionIds(chart);
   const { data: logs, error: logsError } = actionIds.length === 0
     ? { data: [], error: null }
@@ -38,6 +53,9 @@ export default async function HistoryDayPage({ params }: HistoryDayProps) {
 
   const logRows = (logs ?? []).map((log) => ({ actionId: log.action_id, date: log.log_date }));
   const groups = mapChartGroups(chart, date, profile.timezone, profile.day_start_hour, logRows);
+  const readOnlyGroups = selected?.status === "archived" && selected.archived_at
+    ? groups.map((group) => ({ ...group, actions: group.actions.map((action) => ({ ...action, archivedAt: action.archivedAt ?? selected.archived_at })) }))
+    : groups;
 
   const previousDate = addDays(date, -1);
   const nextHref = compareDates(date, addDays(currentDate, -1)) < 0 ? `/history/${addDays(date, 1)}` : "/today";
@@ -47,7 +65,7 @@ export default async function HistoryDayPage({ params }: HistoryDayProps) {
     <main className="min-h-screen bg-transparent px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl"><TopNav active="history" /><section className="mx-auto max-w-2xl">
         <HistoryControls date={date} yesterday={addDays(currentDate, -1)} previousDate={previousDate} nextHref={nextHref} />
-        <TodayClient userId={user.id} date={date} isHistory calendarDate={currentDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
+        <TodayClient userId={user.id} date={date} isHistory calendarDate={currentDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={readOnlyGroups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
       </section></div>
     </main>
   );
