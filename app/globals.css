@@ -75,6 +75,10 @@
   --motion-shimmer: 1800ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --activity-level-1: #d7e9dc;
+  --activity-level-2: #a8d0b1;
+  --activity-level-3: #74ae82;
+  --activity-level-4: #3e7f50;
   --position-1-background: #fff0e8;
   --position-1-accent: #c86b45;
   --position-1-text: #4a2419;
