@@ -189,6 +189,14 @@
   [aria-labelledby="actions-heading"] > .mt-5.grid.gap-4 > div:nth-child(6) { animation-delay: 200ms; }
   [aria-labelledby="actions-heading"] > .mt-5.grid.gap-4 > div:nth-child(7) { animation-delay: 240ms; }
   [aria-labelledby="actions-heading"] > .mt-5.grid.gap-4 > div:nth-child(8) { animation-delay: 280ms; }
+
+  [aria-labelledby="actions-heading"] button > span:first-child {
+    transition: background-color var(--motion-fast) var(--ease-in-out), border-color var(--motion-fast) var(--ease-in-out), transform var(--motion-fast) var(--ease-out);
+  }
+
+  [aria-labelledby="actions-heading"] button[aria-label*="done: yes"] > span:first-child {
+    animation: check-tick var(--motion-fast) var(--ease-out) both;
+  }
 }
 
 @keyframes flow-cell-in {
@@ -212,6 +220,17 @@
   }
 }
 
+@keyframes check-tick {
+  from {
+    opacity: 0.5;
+    transform: scale(0.78);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
 .animate-skeleton-pulse {
   animation: skeleton-pulse var(--motion-shimmer) var(--ease-in-out) infinite;
 }
@@ -226,6 +245,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-skeleton-pulse,
+  .flow-cell,
+  .overview-cell,
+  .today-group,
+  [aria-labelledby="actions-heading"] > .mt-5.grid.gap-4 > div,
+  [aria-labelledby="actions-heading"] button[aria-label*="done: yes"] > span:first-child {
+    animation: none !important;
+  }
+
   *,
   *::before,
   *::after {
