@@ -30,7 +30,7 @@ export function SubGoalGrid({ data, position, onCellSelect, progress: _progress,
 
   return (
     <section className="mx-auto w-full max-w-2xl">
-      <Link href="/chart" transitionTypes={["nav-back"]} className="mb-5 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
+      <Link href={`/chart?window=${_window}`} transitionTypes={["nav-back"]} className="mb-5 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
         ← Back to overview
       </Link>
       <div className="mb-6" style={positionStyle(position)}>
