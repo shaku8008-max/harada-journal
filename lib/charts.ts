@@ -2,8 +2,8 @@ import type { Tables } from "@/lib/supabase/database.types";
 
 import { createClient } from "@/lib/supabase/server";
 
-export type ChartRecord = Pick<Tables<"charts">, "id" | "title" | "why" | "target_date" | "started_at">;
-export type SubGoalRecord = Pick<Tables<"sub_goals">, "id" | "chart_id" | "position" | "title">;
+export type ChartRecord = Pick<Tables<"charts">, "id" | "title" | "why" | "target_date" | "started_at" | "archived_at" | "status">;
+export type SubGoalRecord = Pick<Tables<"sub_goals">, "id" | "chart_id" | "position" | "title" | "archived_at">;
 export type ActionKind = "daily" | "weekly" | "one_off";
 export type ActionRecord = Pick<Tables<"actions">, "id" | "sub_goal_id" | "position" | "title" | "weekly_target" | "created_at" | "archived_at"> & { kind: ActionKind };
 export type ActionLogRecord = Pick<Tables<"action_logs">, "action_id" | "log_date">;
@@ -22,7 +22,7 @@ export async function getActiveChart(userId: string): Promise<ChartData | null> 
   const supabase = await createClient();
   const { data: chart, error: chartError } = await supabase
     .from("charts")
-    .select("id, title, why, target_date, started_at")
+    .select("id, title, why, target_date, started_at, archived_at, status")
     .eq("user_id", userId)
     .eq("status", "active")
     .maybeSingle();
@@ -37,7 +37,7 @@ export async function getActiveChart(userId: string): Promise<ChartData | null> 
 
   const { data: subGoals, error: subGoalError } = await supabase
     .from("sub_goals")
-    .select("id, chart_id, position, title")
+    .select("id, chart_id, position, title, archived_at")
     .eq("chart_id", chart.id)
     .eq("user_id", userId)
     .is("archived_at", null)
@@ -66,6 +66,61 @@ export async function getActiveChart(userId: string): Promise<ChartData | null> 
     .filter((action) => isActionKind(action.kind))
     .map((action) => ({ ...action, kind: action.kind as ActionKind }));
   return { chart, subGoals, actions: normalisedActions };
+}
+
+async function loadArchivedChart(userId: string, chart: ChartRecord): Promise<ChartData> {
+  const supabase = await createClient();
+  const { data: subGoals, error: subGoalError } = await supabase
+    .from("sub_goals")
+    .select("id, chart_id, position, title, archived_at")
+    .eq("chart_id", chart.id)
+    .eq("user_id", userId)
+    .order("position");
+  if (subGoalError) throw new Error(`Unable to load sub-goals: ${subGoalError.message}`);
+
+  const subGoalIds = (subGoals ?? []).map((subGoal) => subGoal.id);
+  const { data: actions, error: actionError } = subGoalIds.length
+    ? await supabase
+        .from("actions")
+        .select("id, sub_goal_id, position, title, kind, weekly_target, created_at, archived_at")
+        .in("sub_goal_id", subGoalIds)
+        .eq("user_id", userId)
+        .order("position")
+    : { data: [], error: null };
+  if (actionError) throw new Error(`Unable to load actions: ${actionError.message}`);
+
+  return {
+    chart,
+    subGoals: subGoals ?? [],
+    actions: (actions ?? [])
+      .filter((action) => isActionKind(action.kind))
+      .map((action) => ({ ...action, kind: action.kind as ActionKind })),
+  };
+}
+
+export async function getArchivedCharts(userId: string): Promise<ChartData[]> {
+  const supabase = await createClient();
+  const { data: charts, error } = await supabase
+    .from("charts")
+    .select("id, title, why, target_date, started_at, archived_at, status")
+    .eq("user_id", userId)
+    .eq("status", "archived")
+    .order("archived_at", { ascending: false });
+  if (error) throw new Error(`Unable to load archived charts: ${error.message}`);
+  return Promise.all((charts ?? []).map((chart) => loadArchivedChart(userId, chart)));
+}
+
+export async function getArchivedChart(userId: string, chartId: string): Promise<ChartData | null> {
+  const supabase = await createClient();
+  const { data: chart, error } = await supabase
+    .from("charts")
+    .select("id, title, why, target_date, started_at, archived_at, status")
+    .eq("id", chartId)
+    .eq("user_id", userId)
+    .eq("status", "archived")
+    .maybeSingle();
+  if (error) throw new Error(`Unable to load archived chart: ${error.message}`);
+  return chart ? loadArchivedChart(userId, chart) : null;
 }
 
 export async function getActionLogsForProgress(

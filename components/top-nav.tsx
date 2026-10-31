@@ -7,7 +7,7 @@ const items = [
   ["settings", "Settings", "/settings"],
 ] as const;
 
-export function TopNav({ active }: { active: (typeof items)[number][0] }) {
+export function TopNav({ active }: { active: string }) {
   return (
     <nav aria-label="Primary navigation" className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--line)] bg-[var(--surface)]/95 p-2 backdrop-blur-xl md:static md:mb-10 md:rounded-2xl md:border md:border-[var(--line)] md:bg-[var(--surface)]/80 md:p-2">
       <div className="mx-auto flex max-w-7xl items-center gap-6">
