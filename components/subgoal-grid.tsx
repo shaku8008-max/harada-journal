@@ -6,12 +6,15 @@ import { ViewTransition, type CSSProperties } from "react";
 import type { ChartData } from "@/lib/charts";
 import { overviewPositions, type GridCell } from "@/lib/grid";
 import { actionHint, positionHints, positionStyle } from "@/lib/position-hints";
+import type { ProgressResult, ProgressWindow } from "@/lib/progress";
 
 function actionLabel(position: number, title: string | null, subGoalTitle: string) {
   return `Action ${position} of ${subGoalTitle || "empty sub-goal"}: ${title ?? "empty"}`;
 }
 
-export function SubGoalGrid({ data, position, onCellSelect }: { data: ChartData; position: number; onCellSelect: (cell: GridCell) => void }) {
+export function SubGoalGrid({ data, position, onCellSelect, progress: _progress, window: _window }: { data: ChartData; position: number; onCellSelect: (cell: GridCell) => void; progress: ProgressResult; window: ProgressWindow }) {
+  void _progress;
+  void _window;
   const subGoal = data.subGoals.find((item) => item.position === position);
   const actions = data.actions.filter((action) => action.sub_goal_id === subGoal?.id);
   const actionsByPosition = new Map(actions.map((action) => [action.position, action]));

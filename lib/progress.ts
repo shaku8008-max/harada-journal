@@ -48,7 +48,7 @@ function average(values: number[]) {
   return values.length ? values.reduce((total, value) => total + value, 0) / values.length : null;
 }
 
-function windowStart(input: ProgressInput) {
+export function progressWindowStart(input: Pick<ProgressInput, "window" | "today" | "chartStartDate">) {
   if (input.window === "week") return weekStart(input.today);
   if (input.window === "30d") return addDays(input.today, -29);
   return input.chartStartDate;
@@ -93,7 +93,7 @@ function scoreOneOff(action: ProgressAction, logs: ProgressLog[]) {
 }
 
 export function calculateProgress(input: ProgressInput): ProgressResult {
-  const start = windowStart(input);
+  const start = progressWindowStart(input);
   const dates = datesBetween(start, input.today);
   const logsByAction = new Map<string, Set<string>>();
   input.logs.forEach((log) => {

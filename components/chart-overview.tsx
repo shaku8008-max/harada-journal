@@ -7,13 +7,16 @@ import type { ChartData } from "@/lib/charts";
 import type { GridCell } from "@/lib/grid";
 import { overviewPositions } from "@/lib/grid";
 import { positionHints, positionStyle } from "@/lib/position-hints";
+import type { ProgressResult, ProgressWindow } from "@/lib/progress";
 
 function dateLabel(value: string | null) {
   if (!value) return null;
   return new Intl.DateTimeFormat("en-AU", { dateStyle: "medium" }).format(new Date(`${value}T00:00:00`));
 }
 
-export function ChartOverview({ data, onMainSelect }: { data: ChartData; onMainSelect: (cell: GridCell) => void }) {
+export function ChartOverview({ data, onMainSelect, progress: _progress, window: _window }: { data: ChartData; onMainSelect: (cell: GridCell) => void; progress: ProgressResult; window: ProgressWindow }) {
+  void _progress;
+  void _window;
   const subGoalsByPosition = new Map(data.subGoals.map((subGoal) => [subGoal.position, subGoal]));
   const actionsBySubGoal = new Map<string, number>();
   data.actions.forEach((action) => actionsBySubGoal.set(action.sub_goal_id, (actionsBySubGoal.get(action.sub_goal_id) ?? 0) + 1));
