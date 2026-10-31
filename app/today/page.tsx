@@ -33,7 +33,7 @@ async function TodayPageContent() {
   const calendarDate = effectiveDate(now, profile.timezone, 0);
   const start = weekStart(date);
   const [{ data: chartData, error: chartError }, { data: journal, error: journalError }] = await Promise.all([
-    supabase.from("charts").select("id, title, sub_goals(id, title, position, archived_at, actions(id, title, position, kind, weekly_target, created_at, archived_at))").eq("user_id", user.id).eq("status", "active").maybeSingle(),
+    supabase.from("charts").select("id, title, sub_goals!sub_goals_chart_id_fkey(id, title, position, archived_at, actions!actions_sub_goal_id_fkey(id, title, position, kind, weekly_target, created_at, archived_at))").eq("user_id", user.id).eq("status", "active").maybeSingle(),
     supabase.from("journal_entries").select("body, mood, created_at, updated_at").eq("user_id", user.id).eq("entry_date", date).maybeSingle(),
   ]);
   if (chartError) throw new Error(chartError.message);

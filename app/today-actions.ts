@@ -37,7 +37,7 @@ export async function toggleActionLog(actionId: string, date: string): Promise<T
   const supabase = await createClient();
   const { data: action, error: actionError } = await supabase
     .from("actions")
-    .select("id, created_at, archived_at, sub_goals!inner(chart_id, charts!inner(status))")
+    .select("id, created_at, archived_at, sub_goals!actions_sub_goal_id_fkey!inner(chart_id, charts!sub_goals_chart_id_fkey!inner(status))")
     .eq("id", actionId)
     .eq("user_id", user.id)
     .eq("sub_goals.charts.status", "active")

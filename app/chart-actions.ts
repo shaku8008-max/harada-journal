@@ -294,7 +294,7 @@ export async function archiveAction(input: { actionId: string; chartId: string }
   const supabase = await createClient();
   const { data: action, error: actionError } = await supabase
     .from("actions")
-    .select("id, sub_goals!inner(chart_id)")
+    .select("id, sub_goals!actions_sub_goal_id_fkey!inner(chart_id)")
     .eq("id", input.actionId)
     .eq("user_id", user.id)
     .eq("sub_goals.chart_id", input.chartId)
