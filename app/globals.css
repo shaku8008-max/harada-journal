@@ -151,6 +151,10 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .progress-fill {
+    transition: background-image 420ms ease-out;
+  }
+
   .flow-cell {
     animation: flow-cell-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: var(--flow-delay, 0ms);

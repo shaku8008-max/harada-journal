@@ -12,11 +12,19 @@ function actionLabel(position: number, title: string | null, subGoalTitle: strin
   return `Action ${position} of ${subGoalTitle || "empty sub-goal"}: ${title ?? "empty"}`;
 }
 
+function scoreLabel(score: number | null) {
+  return score === null ? "—" : `${Math.round(score * 100)}%`;
+}
+
+function progressStyle(score: number | null): CSSProperties {
+  const amount = score === null ? 0 : Math.round(score * 100);
+  return { backgroundImage: `linear-gradient(to top, var(--position-fill) 0%, var(--position-fill) ${amount}%, var(--position-background) ${amount}%, var(--position-background) 100%)` };
+}
+
 export function SubGoalGrid({ data, position, onCellSelect, progress: _progress, window: _window }: { data: ChartData; position: number; onCellSelect: (cell: GridCell) => void; progress: ProgressResult; window: ProgressWindow }) {
-  void _progress;
   void _window;
   const subGoal = data.subGoals.find((item) => item.position === position);
-  const actions = data.actions.filter((action) => action.sub_goal_id === subGoal?.id);
+  const actions = data.actions.filter((action) => action.sub_goal_id === subGoal?.id && !action.archived_at);
   const actionsByPosition = new Map(actions.map((action) => [action.position, action]));
   const subGoalTitle = subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`;
   const centerCell: GridCell = {
@@ -42,16 +50,20 @@ export function SubGoalGrid({ data, position, onCellSelect, progress: _progress,
         <div className="grid grid-cols-3 gap-2 rounded-2xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-2 sm:gap-3 sm:p-3" aria-label={`Sub-goal ${position} action grid`}>
           {overviewPositions.map((cellPosition) => {
           if (cellPosition === "centre") {
-            return <button key="centre" type="button" onClick={() => onCellSelect(centerCell)} aria-label={`Sub-goal ${position}: ${subGoal?.title ?? "empty"}`} className="flow-cell flex min-h-28 items-center rounded-xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-3 text-left text-[15px] font-medium leading-6 text-[var(--position-text)] motion-safe:transition-[transform,filter] motion-safe:hover:-translate-y-0.5 motion-safe:hover:brightness-110 motion-safe:active:scale-[0.98] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--position-accent)] sm:min-h-36 sm:p-5" style={{ "--flow-delay": "80ms" } as CSSProperties}>
-              <span className="line-clamp-4">{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>
-            </button>;
+             const subGoalScore = subGoal ? _progress.subGoals[subGoal.id]?.score ?? null : null;
+             return <button key="centre" type="button" onClick={() => onCellSelect(centerCell)} aria-label={`Sub-goal ${position}: ${subGoal?.title ?? "empty"}, ${scoreLabel(subGoalScore)}`} className="flow-cell flex min-h-28 items-center rounded-xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-3 text-left text-[15px] font-medium leading-6 text-[var(--position-text)] motion-safe:transition-[transform,filter] motion-safe:hover:-translate-y-0.5 motion-safe:hover:brightness-110 motion-safe:active:scale-[0.98] focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--position-accent)] sm:min-h-36 sm:p-5" style={{ "--flow-delay": "80ms" } as CSSProperties}>
+               <span className="line-clamp-4">{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>
+               <span className="mt-2 text-xl">{scoreLabel(subGoalScore)}</span>
+             </button>;
           }
           const action = actionsByPosition.get(cellPosition);
+          const actionProgress = action ? _progress.actions[action.id] : undefined;
           const cell: GridCell = action
             ? { key: `action-${action.id}`, kind: "action", position: cellPosition, subGoalPosition: position, title: action.title, action }
             : { key: `action-empty-${position}-${cellPosition}`, kind: "action", position: cellPosition, subGoalPosition: position, title: null };
-          return <button key={cell.key} type="button" onClick={() => onCellSelect(cell)} aria-label={actionLabel(cellPosition, action?.title ?? null, subGoalTitle)} className={`flow-cell flex min-h-28 w-full items-center rounded-xl border border-[var(--position-accent)] bg-[var(--position-background)] p-3 text-left text-[15px] leading-6 text-[var(--position-text)] motion-safe:transition-[transform,filter] motion-safe:hover:-translate-y-0.5 motion-safe:hover:brightness-110 motion-safe:active:brightness-95 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--position-accent)] sm:min-h-36 sm:p-5`} style={{ "--flow-delay": `${120 + cellPosition * 35}ms` } as CSSProperties}>
-              <span className={action ? "line-clamp-4" : "italic"}>{action?.title ?? `e.g. ${actionHint}`}</span>
+          return <button key={cell.key} type="button" onClick={() => onCellSelect(cell)} aria-label={`${actionLabel(cellPosition, action?.title ?? null, subGoalTitle)}${action ? `, ${actionProgress?.detail ?? "no score"}` : ""}`} className={`progress-fill flow-cell flex min-h-28 w-full items-center rounded-xl border border-[var(--position-accent)] bg-[var(--position-background)] p-3 text-left text-[15px] leading-6 text-[var(--position-text)] motion-safe:transition-[transform,filter] motion-safe:hover:-translate-y-0.5 motion-safe:hover:brightness-110 motion-safe:active:brightness-95 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--position-accent)] sm:min-h-36 sm:p-5`} style={{ ...progressStyle(actionProgress?.score ?? null), "--flow-delay": `${120 + cellPosition * 35}ms` } as CSSProperties}>
+               <span className={action ? "line-clamp-4" : "italic"}>{action?.title ?? `e.g. ${actionHint}`}</span>
+               <span className="mt-2 text-sm font-medium">{actionProgress?.detail ?? "—"}</span>
             </button>;
           })}
         </div>
