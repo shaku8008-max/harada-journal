@@ -50,6 +50,28 @@ describe("calculateProgress", () => {
     expect(result.overallScore).toBeNull();
   });
 
+  it("counts only the live days after creation", () => {
+    const result = calculateProgress({
+      ...settings,
+      window: "week",
+      actions: [action({ createdAt: "2026-01-13T03:00:00Z" })],
+      logs: [log("daily-1", "2026-01-14")],
+    });
+
+    expect(result.actions["daily-1"]).toEqual({ score: 1 / 2, detail: "1/2 days" });
+  });
+
+  it("stops counting on the effective archive date", () => {
+    const result = calculateProgress({
+      ...settings,
+      window: "week",
+      actions: [action({ archivedAt: "2026-01-14T03:00:00Z" })],
+      logs: [log("daily-1", "2026-01-12")],
+    });
+
+    expect(result.actions["daily-1"]).toEqual({ score: 1 / 2, detail: "1/2 days" });
+  });
+
   it("scores weekly actions and caps each overlapping week at one", () => {
     const result = calculateProgress({
       today: "2026-01-25",
@@ -84,5 +106,36 @@ describe("calculateProgress", () => {
     expect(result.actions.done).toEqual({ score: 1, detail: "Done" });
     expect(result.actions.open).toEqual({ score: 0, detail: "Not done" });
     expect(result.actions.archived).toBeUndefined();
+  });
+
+  it("handles a window crossing Melbourne daylight-saving time", () => {
+    const result = calculateProgress({
+      today: "2026-10-05",
+      chartStartDate: "2026-10-03",
+      timezone: "Australia/Melbourne",
+      dayStartHour: 3,
+      window: "all",
+      actions: [action({ createdAt: "2026-10-03T16:00:00Z" })],
+      logs: [log("daily-1", "2026-10-05")],
+    });
+
+    expect(result.actions["daily-1"]).toEqual({ score: 1 / 2, detail: "1/2 days" });
+  });
+
+  it("returns null scores when there are no actions or logs", () => {
+    const result = calculateProgress({ ...settings, window: "week", actions: [], logs: [] });
+
+    expect(result).toEqual({ actions: {}, subGoals: {}, overallScore: null });
+  });
+
+  it("caps a weekly action at one even when it has extra logs", () => {
+    const result = calculateProgress({
+      ...settings,
+      window: "week",
+      actions: [action({ kind: "weekly", weeklyTarget: 2 })],
+      logs: [log("daily-1", "2026-01-12"), log("daily-1", "2026-01-13"), log("daily-1", "2026-01-14")],
+    });
+
+    expect(result.actions["daily-1"]).toEqual({ score: 1, detail: "3/2 this week" });
   });
 });
