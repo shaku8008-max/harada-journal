@@ -147,21 +147,27 @@
 }
 
 ::view-transition-group(.flow-morph) {
-  animation-duration: 520ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-duration: var(--motion-base);
+  animation-timing-function: var(--ease-out);
 }
 
 ::view-transition-image-pair(.flow-morph) {
-  animation: flow-morph 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: flow-morph var(--motion-base) var(--ease-out);
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .transition,
+  .transition-all {
+    transition-duration: var(--motion-fast);
+    transition-timing-function: var(--ease-in-out);
+  }
+
   .progress-fill-layer {
     transition: transform var(--motion-slow) var(--ease-out);
   }
 
   .flow-cell {
-    animation: flow-cell-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: flow-cell-in var(--motion-base) var(--ease-out) both;
     animation-delay: var(--flow-delay, 0ms);
   }
 }
