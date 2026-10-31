@@ -267,6 +267,14 @@ export type Database = {
         Args: { p_chart_id: string; p_sub_goal_id: string }
         Returns: undefined
       }
+      daily_activity: {
+        Args: { from_date: string; to_date: string }
+        Returns: {
+          actions_done: number
+          has_entry: boolean
+          log_date: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
