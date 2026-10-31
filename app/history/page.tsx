@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/require-user";
 
 import { HistoryControls } from "./history-controls";
+import { redirect } from "next/navigation";
 
 export const instant = false;
 
@@ -18,8 +19,9 @@ function friendlyDate(date: string) {
 export default async function HistoryPage({ searchParams }: HistoryPageProps) {
   const user = await requireUser();
   const supabase = await createClient();
-  const { data: profile, error: profileError } = await supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).single();
-  if (profileError || !profile) throw new Error(profileError?.message ?? "Your profile is unavailable.");
+  const { data: profile, error: profileError } = await supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).maybeSingle();
+  if (profileError) throw new Error(profileError.message);
+  if (!profile) redirect("/settings");
 
   const currentDate = effectiveDate(new Date(), profile.timezone, profile.day_start_hour);
   const yesterday = addDays(currentDate, -1);

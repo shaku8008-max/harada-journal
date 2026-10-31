@@ -8,6 +8,7 @@ import { calculateProgress, progressWindowStart, type ProgressWindow } from "@/l
 import { effectiveDate } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 import { getActionLogsForProgress } from "@/lib/charts";
+import { redirect } from "next/navigation";
 
 export const instant = false;
 
@@ -21,9 +22,10 @@ export default async function ChartPage({
   const supabase = await createClient();
   const [chartData, profileResult] = await Promise.all([
     getActiveChart(user.id),
-    supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).single(),
+    supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).maybeSingle(),
   ]);
-  if (profileResult.error || !profileResult.data) throw new Error(profileResult.error?.message ?? "Your profile is unavailable.");
+  if (profileResult.error) throw new Error(profileResult.error.message);
+  if (!profileResult.data) redirect("/settings");
   const profile = profileResult.data;
   const rawWindow = Array.isArray(query.window) ? query.window[0] : query.window;
   const window: ProgressWindow = rawWindow === "30d" || rawWindow === "all" ? rawWindow : "week";

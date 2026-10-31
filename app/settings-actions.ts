@@ -37,14 +37,12 @@ export async function saveSettings(input: {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      display_name: displayName || null,
-      timezone: input.timezone,
-      day_start_hour: input.dayStartHour,
-    })
-    .eq("id", user.id);
+  const { error } = await supabase.from("profiles").upsert({
+    id: user.id,
+    display_name: displayName || null,
+    timezone: input.timezone,
+    day_start_hour: input.dayStartHour,
+  });
 
   return error ? { error: error.message } : {};
 }

@@ -15,7 +15,7 @@ async function userDaySettings(userId: string) {
     .from("profiles")
     .select("timezone, day_start_hour")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
   if (error || !profile) throw new Error(error?.message ?? "Your profile is unavailable.");
   return profile;

@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/supabase/require-user";
 import { actionIdsForKind, chartActionIds, mapChartGroups, type ChartData } from "@/lib/today-data";
 
 import { TodayClient } from "./today-client";
+import { redirect } from "next/navigation";
 
 export const instant = false;
 
@@ -15,8 +16,9 @@ export default async function TodayPage() {
     .from("profiles")
     .select("timezone, day_start_hour")
     .eq("id", user.id)
-    .single();
-  if (profileError || !profile) throw new Error(profileError?.message ?? "Your profile is unavailable.");
+    .maybeSingle();
+  if (profileError) throw new Error(profileError.message);
+  if (!profile) redirect("/settings");
 
   const now = new Date();
   const date = effectiveDate(now, profile.timezone, profile.day_start_hour);

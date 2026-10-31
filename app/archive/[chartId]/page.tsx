@@ -7,6 +7,7 @@ import { effectiveDate } from "@/lib/dates";
 import { calculateProgress, progressWindowStart, type ProgressWindow } from "@/lib/progress";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/require-user";
+import { redirect } from "next/navigation";
 
 export const instant = false;
 
@@ -20,10 +21,11 @@ export default async function ArchivedChartPage({ params, searchParams }: { para
   const query = await searchParams;
   const supabase = await createClient();
   const [{ data: profile, error: profileError }, chartData] = await Promise.all([
-    supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).single(),
+    supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).maybeSingle(),
     getArchivedChart(user.id, chartId),
   ]);
-  if (profileError || !profile) throw new Error(profileError?.message ?? "Your profile is unavailable.");
+  if (profileError) throw new Error(profileError.message);
+  if (!profile) redirect("/settings");
   if (!chartData || !chartData.chart.archived_at) notFound();
 
   const today = effectiveDate(new Date(chartData.chart.archived_at), profile.timezone, profile.day_start_hour);

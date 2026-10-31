@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { TopNav } from "@/components/top-nav";
 import { addDays, compareDates, effectiveDate, isValidDateString, weekStart } from "@/lib/dates";
@@ -17,8 +17,9 @@ export default async function HistoryDayPage({ params }: HistoryDayProps) {
   const { date } = await params;
   const user = await requireUser();
   const supabase = await createClient();
-  const { data: profile, error: profileError } = await supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).single();
-  if (profileError || !profile) throw new Error(profileError?.message ?? "Your profile is unavailable.");
+  const { data: profile, error: profileError } = await supabase.from("profiles").select("timezone, day_start_hour").eq("id", user.id).maybeSingle();
+  if (profileError) throw new Error(profileError.message);
+  if (!profile) redirect("/settings");
   const currentDate = effectiveDate(new Date(), profile.timezone, profile.day_start_hour);
   if (!isValidDateString(date) || compareDates(date, currentDate) >= 0) notFound();
 
