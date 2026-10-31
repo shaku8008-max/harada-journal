@@ -20,7 +20,7 @@ function friendlyDate(date: string) {
 }
 
 export default function HistoryPage(props: HistoryPageProps) {
-  return <Suspense fallback={<PageFallback label="Loading history..." />}><HistoryPageContent {...props} /></Suspense>;
+  return <Suspense fallback={<PageFallback label="Loading history..." variant="list" />}><HistoryPageContent {...props} /></Suspense>;
 }
 
 async function HistoryPageContent({ searchParams }: HistoryPageProps) {

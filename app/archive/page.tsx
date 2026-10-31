@@ -18,7 +18,7 @@ function dateLabel(value: string | null) {
 }
 
 export default function ArchivePage() {
-  return <Suspense fallback={<PageFallback label="Loading your archive..." />}><ArchivePageContent /></Suspense>;
+  return <Suspense fallback={<PageFallback label="Loading your archive..." variant="archive" />}><ArchivePageContent /></Suspense>;
 }
 
 async function ArchivePageContent() {

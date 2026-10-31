@@ -17,7 +17,7 @@ export const instant = false;
 type HistoryDayProps = { params: Promise<{ date: string }> };
 
 export default function HistoryDayPage(props: HistoryDayProps) {
-  return <Suspense fallback={<PageFallback label="Loading this day..." />}><HistoryDayPageContent {...props} /></Suspense>;
+  return <Suspense fallback={<PageFallback label="Loading this day..." variant="today" />}><HistoryDayPageContent {...props} /></Suspense>;
 }
 
 async function HistoryDayPageContent({ params }: HistoryDayProps) {

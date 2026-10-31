@@ -2,10 +2,16 @@ import { requireUser } from "@/lib/supabase/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { TopNav } from "@/components/top-nav";
 import { SettingsForm } from "./settings-form";
+import { Suspense } from "react";
+import { PageFallback } from "@/components/page-fallback";
 
 export const instant = false;
 
 export default async function SettingsPage() {
+  return <Suspense fallback={<PageFallback label="Loading settings..." variant="settings" />}><SettingsPageContent /></Suspense>;
+}
+
+async function SettingsPageContent() {
   const user = await requireUser();
   const supabase = await createClient();
   const { data: profile, error } = await supabase

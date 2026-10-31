@@ -13,7 +13,7 @@ import { PageFallback } from "@/components/page-fallback";
 export const instant = false;
 
 export default function TodayPage() {
-  return <Suspense fallback={<PageFallback label="Loading today..." />}><TodayPageContent /></Suspense>;
+  return <Suspense fallback={<PageFallback label="Loading today..." variant="today" />}><TodayPageContent /></Suspense>;
 }
 
 async function TodayPageContent() {

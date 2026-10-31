@@ -18,7 +18,7 @@ export const instant = false;
 export default function ChartPage(props: {
   searchParams: Promise<{ subGoal?: string | string[] | undefined; window?: string | string[] | undefined }>;
 }) {
-  return <Suspense fallback={<PageFallback />}><ChartPageContent {...props} /></Suspense>;
+  return <Suspense fallback={<PageFallback variant="chart" />}><ChartPageContent {...props} /></Suspense>;
 }
 
 async function ChartPageContent({

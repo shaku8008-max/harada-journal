@@ -21,7 +21,7 @@ function dateLabel(value: string | null) {
 type ArchivedChartPageProps = { params: Promise<{ chartId: string }>; searchParams: Promise<{ subGoal?: string | string[] | undefined; window?: string | string[] | undefined }> };
 
 export default function ArchivedChartPage(props: ArchivedChartPageProps) {
-  return <Suspense fallback={<PageFallback label="Loading this archived chart..." />}><ArchivedChartPageContent {...props} /></Suspense>;
+  return <Suspense fallback={<PageFallback label="Loading this archived chart..." variant="chart" />}><ArchivedChartPageContent {...props} /></Suspense>;
 }
 
 async function ArchivedChartPageContent({ params, searchParams }: ArchivedChartPageProps) {

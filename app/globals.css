@@ -183,6 +183,20 @@
   }
 }
 
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.48;
+  }
+  50% {
+    opacity: 0.78;
+  }
+}
+
+.animate-skeleton-pulse {
+  animation: skeleton-pulse var(--motion-shimmer) var(--ease-in-out) infinite;
+}
+
 @keyframes flow-morph {
   from {
     filter: blur(2px);
