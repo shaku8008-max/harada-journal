@@ -203,7 +203,7 @@ export function ChartWizard() {
               </label>
             </div>
             <div className="mt-8 flex justify-end">
-              <button type="button" disabled={!title.trim() || isPending} onClick={saveMainGoal} className="min-h-12 rounded-full bg-[var(--ink)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
+              <button type="button" disabled={!title.trim() || isPending} onClick={saveMainGoal} className="min-h-12 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-[var(--accent-foreground)] transition hover:bg-[var(--aether-lilac)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
                 {isPending ? "Saving..." : "Continue to sub-goals"}
               </button>
             </div>
@@ -226,7 +226,7 @@ export function ChartWizard() {
               <button type="button" onClick={() => setStep(1)} className="min-h-12 rounded-full px-5 py-3 text-sm font-medium text-[var(--muted-ink)] hover:bg-[var(--paper)]">Back</button>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button type="button" onClick={() => setStep(3)} className="min-h-12 rounded-full border border-[var(--line)] px-5 py-3 text-sm font-medium hover:border-[var(--ink)]">Skip for now</button>
-                <button type="button" onClick={continueToActions} disabled={isPending} className="min-h-12 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-medium text-white hover:bg-[var(--accent)] disabled:opacity-50">{isPending ? "Saving..." : "Continue to actions"}</button>
+                <button type="button" onClick={continueToActions} disabled={isPending} className="min-h-12 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-medium text-[var(--accent-foreground)] hover:bg-[var(--aether-lilac)] disabled:opacity-50">{isPending ? "Saving..." : "Continue to actions"}</button>
               </div>
             </div>
           </div>
@@ -259,7 +259,7 @@ export function ChartWizard() {
             </div>
             <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
               <button type="button" onClick={() => setStep(2)} className="min-h-12 rounded-full px-5 py-3 text-sm font-medium text-[var(--muted-ink)] hover:bg-[var(--paper)]">Back</button>
-              <button type="button" onClick={finishWizard} disabled={isPending} className="min-h-12 rounded-full bg-[var(--ink)] px-6 py-3 text-sm font-medium text-white hover:bg-[var(--accent)] disabled:opacity-50">Open my chart</button>
+              <button type="button" onClick={finishWizard} disabled={isPending} className="min-h-12 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-[var(--accent-foreground)] hover:bg-[var(--aether-lilac)] disabled:opacity-50">Open my chart</button>
             </div>
           </div>
         )}

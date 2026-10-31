@@ -43,7 +43,7 @@ export function ChartOverview({ data, onMainSelect, progress: _progress, window:
         {(["week", "30d", "all"] as const).map((item) => {
           const label = item === "week" ? "This week" : item === "30d" ? "Last 30 days" : "All time";
           const active = _window === item;
-          return <Link key={item} href={`/chart?window=${item}`} aria-current={active ? "page" : undefined} className={`flex min-h-9 flex-1 items-center justify-center rounded-full px-3 text-[15px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:flex-none ${active ? "bg-[var(--ink)] text-[var(--paper)]" : "text-[var(--muted-ink)] hover:text-[var(--ink)]"}`}>{label}</Link>;
+          return <Link key={item} href={`/chart?window=${item}`} aria-current={active ? "page" : undefined} className={`flex min-h-9 flex-1 items-center justify-center rounded-full px-3 text-[15px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] sm:flex-none ${active ? "bg-[var(--accent)] text-[var(--accent-foreground)]" : "text-[var(--muted-ink)] hover:text-[var(--ink)]"}`}>{label}</Link>;
         })}
       </nav>
 

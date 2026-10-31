@@ -80,7 +80,7 @@ export function SettingsForm({ displayName: initialDisplayName, timezone: initia
         </select>
         <p className="text-sm text-[var(--muted-ink)]">Entries before this hour count toward the previous day.</p>
       </div>
-      <button type="submit" disabled={isPending} className="min-h-12 rounded-full bg-[var(--ink)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[var(--accent)] disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
+      <button type="submit" disabled={isPending} className="min-h-12 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-[var(--accent-foreground)] transition hover:bg-[var(--aether-lilac)] disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
         {isPending ? "Saving..." : "Save settings"}
       </button>
       {saved && <p role="status" className="text-sm text-emerald-300">Settings saved.</p>}

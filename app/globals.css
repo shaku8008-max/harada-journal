@@ -38,69 +38,69 @@
 }
 
 :root {
-  --aether-lilac: #c49aff;
-  --paper: #0b0c11;
-  --surface: #141720;
-  --surface-raised: #1a1d28;
-  --ink: #f4f1fb;
-  --muted-ink: #aaa8b6;
-  --line: #2f3342;
+  --aether-lilac: #7059a8;
+  --paper: #f7f9fc;
+  --surface: #ffffff;
+  --surface-raised: #f1f5f9;
+  --ink: #243047;
+  --muted-ink: #5f6b7c;
+  --line: #d7deea;
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: #141720;
-  --card-foreground: #f4f1fb;
-  --popover: #1a1d28;
-  --popover-foreground: #f4f1fb;
-  --primary: #f4f1fb;
-  --primary-foreground: #090a10;
-  --secondary: #202431;
-  --secondary-foreground: #f4f1fb;
-  --muted: #202431;
-  --muted-foreground: #aaa6b8;
-  --accent: #a878ea;
-  --accent-foreground: #100d18;
-  --destructive: #f07b85;
-  --border: #2f3342;
-  --input: #2f3342;
-  --ring: #c49aff;
+  --card: #ffffff;
+  --card-foreground: #243047;
+  --popover: #ffffff;
+  --popover-foreground: #243047;
+  --primary: #243047;
+  --primary-foreground: #ffffff;
+  --secondary: #edf1f7;
+  --secondary-foreground: #243047;
+  --muted: #edf1f7;
+  --muted-foreground: #5f6b7c;
+  --accent: #7059a8;
+  --accent-foreground: #ffffff;
+  --destructive: #b42335;
+  --border: #d7deea;
+  --input: #d7deea;
+  --ring: #7059a8;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.75rem;
-  --position-1-background: #33232d;
-  --position-1-accent: #f2a07d;
-  --position-1-text: #fff4ef;
-  --position-1-fill: #8b3f2b;
-  --position-2-background: #25362b;
-  --position-2-accent: #9ee0a7;
-  --position-2-text: #f1fff4;
-  --position-2-fill: #3d7747;
-  --position-3-background: #243747;
-  --position-3-accent: #91d7ff;
-  --position-3-text: #eff9ff;
-  --position-3-fill: #286580;
-  --position-4-background: #30243f;
-  --position-4-accent: #cfabff;
-  --position-4-text: #fbf5ff;
-  --position-4-fill: #66479a;
-  --position-5-background: #3a2430;
-  --position-5-accent: #ff9ebb;
-  --position-5-text: #fff3f8;
-  --position-5-fill: #873c5a;
-  --position-6-background: #3c341d;
-  --position-6-accent: #ffd875;
-  --position-6-text: #fff9e7;
-  --position-6-fill: #765c16;
-  --position-7-background: #292d4a;
-  --position-7-accent: #aeb7ff;
-  --position-7-text: #f2f4ff;
-  --position-7-fill: #4c579f;
-  --position-8-background: #254039;
-  --position-8-accent: #8de4ce;
-  --position-8-text: #effff9;
-  --position-8-fill: #397b68;
+  --position-1-background: #fff0e8;
+  --position-1-accent: #c86b45;
+  --position-1-text: #4a2419;
+  --position-1-fill: #e8a080;
+  --position-2-background: #edf8ef;
+  --position-2-accent: #4b9460;
+  --position-2-text: #204629;
+  --position-2-fill: #a9d7b1;
+  --position-3-background: #eaf5fb;
+  --position-3-accent: #3984aa;
+  --position-3-text: #1e4557;
+  --position-3-fill: #9acbe1;
+  --position-4-background: #f1edfb;
+  --position-4-accent: #7958b0;
+  --position-4-text: #362354;
+  --position-4-fill: #b8a1dd;
+  --position-5-background: #fcedf3;
+  --position-5-accent: #b85c7c;
+  --position-5-text: #542239;
+  --position-5-fill: #e2a0ba;
+  --position-6-background: #fff8df;
+  --position-6-accent: #9a7518;
+  --position-6-text: #4c3a08;
+  --position-6-fill: #efd27a;
+  --position-7-background: #eef0ff;
+  --position-7-accent: #5968bd;
+  --position-7-text: #28316a;
+  --position-7-fill: #afb9ee;
+  --position-8-background: #e8f7f2;
+  --position-8-accent: #438c78;
+  --position-8-text: #205245;
+  --position-8-fill: #a3d8c9;
 }
 
 @layer base {
@@ -117,18 +117,17 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(circle at 88% -8%, rgb(164 125 235 / 0.12), transparent 28rem), radial-gradient(circle at 8% 92%, rgb(63 86 122 / 0.08), transparent 24rem);
-    background-attachment: fixed;
+    background-image: none;
   }
   html {
     @apply font-sans;
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   input,
   textarea,
   select {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   ::selection {

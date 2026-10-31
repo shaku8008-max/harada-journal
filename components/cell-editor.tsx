@@ -122,7 +122,7 @@ export function CellEditor({ data, cell, open, onOpenChange }: CellEditorProps) 
 
   const actions = <>
     {selectedCell.kind !== "main" && !isCreate && <button type="button" onClick={archive} disabled={isPending} className="min-h-11 rounded-full px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50">Archive</button>}
-    <div className="flex gap-2 sm:ml-auto"><button type="button" onClick={close} className="min-h-11 rounded-full border border-[var(--line)] px-5 py-2 text-sm font-medium hover:border-[var(--ink)]">Cancel</button><button type="button" onClick={save} disabled={isPending || !title.trim()} className="min-h-11 rounded-full bg-[var(--ink)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--accent)] disabled:opacity-50">{isPending ? "Saving..." : isCreate ? "Create" : "Save changes"}</button></div>
+    <div className="flex gap-2 sm:ml-auto"><button type="button" onClick={close} className="min-h-11 rounded-full border border-[var(--line)] px-5 py-2 text-sm font-medium hover:border-[var(--ink)]">Cancel</button><button type="button" onClick={save} disabled={isPending || !title.trim()} className="min-h-11 rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-medium text-[var(--accent-foreground)] hover:bg-[var(--aether-lilac)] disabled:opacity-50">{isPending ? "Saving..." : isCreate ? "Create" : "Save changes"}</button></div>
   </>;
 
   return isMobile ? (
