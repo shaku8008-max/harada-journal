@@ -20,6 +20,7 @@ export type Group = { id: string; title: string; position: number; actions: Acti
 export type TodayClientProps = {
   userId: string;
   date: string;
+  streak?: number;
   isHistory?: boolean;
   actionsReadOnly?: boolean;
   yesterday?: string;
@@ -59,7 +60,7 @@ function formatTimestamp(value: string) {
   return new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
-export function TodayClient({ userId, date, isHistory = false, actionsReadOnly = false, yesterday, calendarDate, dayStartHour, weekStart, groups, logs, journal }: TodayClientProps) {
+export function TodayClient({ userId, date, streak = 0, isHistory = false, actionsReadOnly = false, yesterday, calendarDate, dayStartHour, weekStart, groups, logs, journal }: TodayClientProps) {
   const [doneIds, setDoneIds] = useState(() => new Set(logs.filter((log) => log.date === date).map((log) => log.actionId)));
   const [pendingAction, setPendingAction] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -190,7 +191,8 @@ export function TodayClient({ userId, date, isHistory = false, actionsReadOnly =
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted-ink)]">{isHistory ? "Backfill" : "Today"}</p>
         <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">{friendlyDate(date)}</h1>
         {!isHistory && date !== calendarDate && <p className="mt-2 text-sm text-[var(--accent)]">Counting as {friendlyWeekday(date)} until {dayStartHour}:00</p>}
-        <p className="mt-3 text-base leading-7 text-[var(--muted-ink)]">Small steps, kept visible.</p>
+         <p className="mt-3 text-base leading-7 text-[var(--muted-ink)]">Small steps, kept visible.</p>
+         {!isHistory && <p className="mt-3 text-sm font-medium text-[var(--accent)]">{streak >= 1 ? `${streak}-day streak` : "Today is a fresh start"}</p>}
         {!isHistory && yesterday && <Link href={`/history/${yesterday}`} className="mt-5 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 text-sm font-medium hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">Yesterday</Link>}
         {!isHistory && groups.length === 0 && <Link href="/chart" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-[var(--accent)] px-5 text-sm font-medium text-[var(--accent-foreground)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">Create a chart</Link>}
       </header>

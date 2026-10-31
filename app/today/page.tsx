@@ -1,5 +1,6 @@
 import { TopNav } from "@/components/top-nav";
 import { addDays, effectiveDate, weekStart } from "@/lib/dates";
+import { calculateStreaks, STREAK_WINDOW_DAYS } from "@/lib/streaks";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/require-user";
 import { actionIdsForKind, chartActionIds, mapChartGroups, type ChartData } from "@/lib/today-data";
@@ -32,16 +33,20 @@ async function TodayPageContent() {
   const date = effectiveDate(now, profile.timezone, profile.day_start_hour);
   const calendarDate = effectiveDate(now, profile.timezone, 0);
   const start = weekStart(date);
-  const [{ data: chartData, error: chartError }, { data: journal, error: journalError }] = await Promise.all([
+  const streakFromDate = addDays(date, -(STREAK_WINDOW_DAYS - 1));
+  const [{ data: chartData, error: chartError }, { data: journal, error: journalError }, { data: activity, error: activityError }] = await Promise.all([
     supabase.from("charts").select("id, title, sub_goals!sub_goals_chart_id_fkey(id, title, position, archived_at, actions!actions_sub_goal_id_fkey(id, title, position, kind, weekly_target, created_at, archived_at))").eq("user_id", user.id).eq("status", "active").maybeSingle(),
     supabase.from("journal_entries").select("body, mood, created_at, updated_at").eq("user_id", user.id).eq("entry_date", date).maybeSingle(),
+    supabase.rpc("daily_activity", { from_date: streakFromDate, to_date: date }),
   ]);
   if (chartError) throw new Error(chartError.message);
   if (journalError) throw new Error(journalError.message);
+  if (activityError) throw new Error(activityError.message);
 
   const chart = chartData as ChartData;
   const actionIds = chartActionIds(chart);
   const oneOffIds = actionIdsForKind(chart, "one_off");
+  const streaks = calculateStreaks((activity ?? []).map((row) => ({ date: row.log_date, actionsDone: row.actions_done, hasEntry: row.has_entry })), date);
   const [weekLogsResult, oneOffLogsResult] = await Promise.all([
     actionIds.length === 0
       ? Promise.resolve({ data: [], error: null })
@@ -59,7 +64,7 @@ async function TodayPageContent() {
   return (
     <main className="min-h-screen bg-transparent px-4 py-6 pb-24 text-[var(--ink)] sm:px-8 sm:py-10 md:pb-10">
       <div className="mx-auto w-full max-w-7xl"><TopNav active="today" /><section className="mx-auto max-w-2xl">
-        <TodayClient userId={user.id} date={date} yesterday={addDays(date, -1)} calendarDate={calendarDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
+         <TodayClient userId={user.id} date={date} streak={streaks.current} yesterday={addDays(date, -1)} calendarDate={calendarDate} dayStartHour={profile.day_start_hour} weekStart={start} groups={groups} logs={logRows} journal={journal ? { body: journal.body, mood: journal.mood, createdAt: journal.created_at, updatedAt: journal.updated_at } : null} />
       </section></div>
     </main>
   );
