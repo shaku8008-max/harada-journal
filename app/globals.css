@@ -69,6 +69,12 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.75rem;
+  --motion-fast: 200ms;
+  --motion-base: 350ms;
+  --motion-slow: 800ms;
+  --motion-shimmer: 1800ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --position-1-background: #fff0e8;
   --position-1-accent: #c86b45;
   --position-1-text: #4a2419;
@@ -150,8 +156,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .progress-fill {
-    transition: background-image 420ms ease-out;
+  .progress-fill-layer {
+    transition: transform var(--motion-slow) var(--ease-out);
   }
 
   .flow-cell {

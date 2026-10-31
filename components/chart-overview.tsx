@@ -19,10 +19,8 @@ function scoreLabel(score: number | null) {
 }
 
 function progressStyle(score: number | null, position?: number): CSSProperties {
-  const fill = position ? "var(--position-fill)" : "var(--aether-lilac)";
-  const background = position ? "var(--position-background)" : "var(--surface)";
   const amount = score === null ? 0 : Math.round(score * 100);
-  return { backgroundImage: `linear-gradient(to top, ${fill} 0%, ${fill} ${amount}%, ${background} ${amount}%, ${background} 100%)` };
+  return { "--progress-scale": amount / 100, ...(position ? {} : { "--progress-fill": "var(--aether-lilac)" }) } as CSSProperties;
 }
 
 export function ChartOverview({ data, onMainSelect, progress: _progress, window: _window, readOnly = false }: { data: ChartData; onMainSelect?: (cell: GridCell) => void; progress: ProgressResult; window: ProgressWindow; readOnly?: boolean }) {
@@ -66,12 +64,15 @@ export function ChartOverview({ data, onMainSelect, progress: _progress, window:
           const scoreDescription = score === null ? "no score" : `${scoreLabel(score)}`;
           return (
             <ViewTransition key={position} name={`flow-subgoal-${position}`} share="flow-morph" default="none">
-               <Link href={readOnly ? `/archive/${data.chart.id}?subGoal=${position}&window=${_window}` : `/chart?subGoal=${position}&window=${_window}`} transitionTypes={["nav-forward"]} aria-label={`Sub-goal ${position}, ${subGoal?.title ?? "empty"}: ${scoreDescription}, ${actionCount} of 8 actions`} style={{ ...positionStyle(position), ...progressStyle(score, position) }} className="progress-fill flex min-h-36 flex-col justify-between rounded-2xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-4 text-left text-[var(--position-text)] shadow-[0_12px_32px_rgba(0,0,0,0.3)] motion-safe:transition-[transform,filter] motion-safe:hover:-translate-y-0.5 motion-safe:hover:brightness-110 motion-safe:active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--position-accent)] sm:min-h-48 sm:p-6">
-                  <span className="text-sm font-medium">Direction {position}</span>
-                  <span className={`line-clamp-4 text-[15px] leading-6 sm:text-lg ${subGoal ? "font-medium" : "italic"}`}>{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>
-                   <span className="text-2xl font-semibold">{scoreLabel(score)}</span>
-                   <span className="text-sm">{actionCount}/8 actions</span>
-              </Link>
+               <Link href={readOnly ? `/archive/${data.chart.id}?subGoal=${position}&window=${_window}` : `/chart?subGoal=${position}&window=${_window}`} transitionTypes={["nav-forward"]} aria-label={`Sub-goal ${position}, ${subGoal?.title ?? "empty"}: ${scoreDescription}, ${actionCount} of 8 actions`} style={{ ...positionStyle(position), ...progressStyle(score, position) }} className="progress-fill relative isolate flex min-h-36 flex-col justify-between overflow-hidden rounded-2xl border-2 border-[var(--position-accent)] bg-[var(--position-background)] p-4 text-left text-[var(--position-text)] shadow-[0_12px_32px_rgba(0,0,0,0.3)] motion-safe:transition-[transform,filter] motion-safe:hover:-translate-y-0.5 motion-safe:hover:brightness-110 motion-safe:active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--position-accent)] sm:min-h-48 sm:p-6">
+                 <span aria-hidden="true" className="progress-fill-layer pointer-events-none absolute inset-x-0 bottom-0 z-0 origin-bottom scale-y-[var(--progress-scale)] bg-[var(--position-fill)]" />
+                 <span className="relative z-10">
+                   <span className="text-sm font-medium">Direction {position}</span>
+                   <span className={`line-clamp-4 text-[15px] leading-6 sm:text-lg ${subGoal ? "font-medium" : "italic"}`}>{subGoal?.title ?? `e.g. ${positionHints[position as keyof typeof positionHints]}`}</span>
+                    <span className="text-2xl font-semibold">{scoreLabel(score)}</span>
+                    <span className="text-sm">{actionCount}/8 actions</span>
+                 </span>
+               </Link>
             </ViewTransition>
           );
         })}
