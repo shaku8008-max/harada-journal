@@ -44,5 +44,5 @@ export async function saveSettings(input: {
     day_start_hour: input.dayStartHour,
   });
 
-  return error ? { error: error.message } : {};
+  return error ? { error: "Something went wrong. Please try again." } : {};
 }
