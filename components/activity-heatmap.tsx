@@ -27,12 +27,12 @@ export function ActivityHeatmap({ grid }: { grid: ActivityGrid }) {
           <div className="grid grid-cols-[repeat(26,minmax(0,1fr))] gap-1" aria-hidden="true">
             {Array.from({ length: grid.weeks.length }, (_, index) => {
               const month = grid.monthLabels.find((label) => label.weekIndex === index);
-              return <div key={index} className="h-5 text-[11px] text-[var(--muted-ink)]">{month?.label}</div>;
+              return <div key={index} className="h-5 text-[15px] text-[var(--muted-ink)]">{month?.label}</div>;
             })}
           </div>
 
           <div className="grid grid-rows-7 gap-1 pt-0.5" aria-hidden="true">
-            {weekdays.map((day, index) => <span key={`${day}-${index}`} className="flex h-5 items-center text-[11px] text-[var(--muted-ink)]">{day}</span>)}
+            {weekdays.map((day, index) => <span key={`${day}-${index}`} className="flex h-5 items-center text-[15px] text-[var(--muted-ink)]">{day}</span>)}
           </div>
           <div role="grid" aria-label="Daily activity" className="grid grid-flow-col grid-rows-7 gap-1">
             {grid.weeks.flatMap((week) => week.map((cell) => (
@@ -50,7 +50,7 @@ export function ActivityHeatmap({ grid }: { grid: ActivityGrid }) {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--muted-ink)]" aria-label="Heatmap legend">
+      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[15px] text-[var(--muted-ink)]" aria-label="Heatmap legend">
         <span>Less</span>
         {[0, 1, 2, 3, 4].map((level) => <span key={level} className={`size-4 rounded-[4px] border border-[var(--line)]/70 ${intensityBackgrounds[level]}`} aria-label={level === 0 ? "No actions" : `Level ${level}`} />)}
         <span>More</span>
